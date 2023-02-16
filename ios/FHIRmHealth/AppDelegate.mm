@@ -3,7 +3,6 @@
 #import <React/RCTBundleURLProvider.h>
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 #import <RNNotifications.h>
-#import <RCTAppleHealthKit.h>
 
 #import "FHIRmHealth-Swift.h"
 
@@ -20,8 +19,6 @@
                                             launchOptions:launchOptions];
   [ReactNativeNavigation bootstrapWithBridge:bridge];
   [RNNotifications startMonitorNotifications];
-
-//  [[RCTAppleHealthKit new] initializeBackgroundObservers:bridge];
 
   [[HealthKitConnector sharedInstance] launchBackgroundQuery];
 

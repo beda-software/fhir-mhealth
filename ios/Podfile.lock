@@ -427,8 +427,6 @@ PODS:
     - React-Core
     - React-RCTImage
     - React-RCTText
-  - RNAppleHealthKit (1.7.0):
-    - React
   - SocketRocket (0.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -495,7 +493,6 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
-  - RNAppleHealthKit (from `../node_modules/react-native-health`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -588,8 +585,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeNavigation:
     :path: "../node_modules/react-native-navigation"
-  RNAppleHealthKit:
-    :path: "../node_modules/react-native-health"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -643,7 +638,6 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 4bf9a9086d27f74065fce1dddac274aa95216952
   ReactCommon: f697c0ac52e999aa818e43e2b6f277787c735e2d
   ReactNativeNavigation: dc7c08b2e1bd223ab391add511f1ebad4a8a87a5
-  RNAppleHealthKit: 60a6beefdd89a75811e9a8873a5e24f351dee681
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 5b0304b3dbef2b52e078052138e23a19c7dacaef
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
