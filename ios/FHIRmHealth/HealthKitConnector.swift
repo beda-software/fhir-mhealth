@@ -61,6 +61,10 @@ class HealthKitEventEmitter: RCTEventEmitter {
     HealthKitConnector.shared.useEventEmitter(self)
   }
 
+  deinit {
+    HealthKitConnector.shared.removeEventEmitter(self)
+  }
+
   @objc override class func requiresMainQueueSetup() -> Bool {
     true
   }
@@ -97,6 +101,12 @@ class HealthKitConnector: NSObject {
 
   func useEventEmitter(_ emitter: HealthKitEventEmitter) {
     self.eventEmitter = emitter
+  }
+
+  func removeEventEmitter(_ emitter: HealthKitEventEmitter) {
+    if self.eventEmitter === emitter {
+      self.eventEmitter = nil
+    }
   }
 
   @objc
