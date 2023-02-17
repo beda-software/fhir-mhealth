@@ -16,7 +16,7 @@ export function ActivityFeed(_props: ActivityFeedProps) {
             <ScrollView contentContainerStyle={s.container}>
                 {activities.reverse().map((activity) => (
                     <Text style={s.label} key={activity.id}>
-                        {activity.display}
+                        {activity.display}, {activity.activeEnergyBurned} kcal
                     </Text>
                 ))}
             </ScrollView>

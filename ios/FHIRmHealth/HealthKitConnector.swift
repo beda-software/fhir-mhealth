@@ -157,7 +157,7 @@ class HealthKitConnector: NSObject {
   }
 
   private func notify(on event: HealthKitEvents) {
-    var updates: [[String: String?]] = []
+    var updates: [[String: Any?]] = []
     switch event {
     case .samplesCreated(let created):
       updates.append(contentsOf: created.map({$0.summary}))
@@ -169,8 +169,17 @@ class HealthKitConnector: NSObject {
 }
 
 extension HKSample {
-  var summary: [String: String?] {
-    return ["id": self.uuid.uuidString, "code": self.code, "display": self.display]
+  var summary: [String: Any?] {
+    [
+      "id": self.uuid.uuidString,
+      "startDate": self.startDate.ISO8601Format(),
+      "endDate": self.endDate.ISO8601Format(),
+      "category": self.category,
+      "code": self.code,
+      "display": self.display,
+    ].merging(
+      self.details, uniquingKeysWith: {(current, _) in current}
+    )
   }
 
   var code: String? {
@@ -200,6 +209,46 @@ extension HKSample {
       return nil
     default:
       return nil
+    }
+  }
+
+  var category: String? {
+    switch self {
+    case _ as HKWorkout:
+      return "workout"
+    case _ as HKQuantitySample:
+      return nil
+    case _ as HKCategorySample:
+      return nil
+    case _ as HKCorrelation:
+      return nil
+    default:
+      return nil
+    }
+  }
+
+  var details: [String: Any?] {
+    switch self {
+    case let workout as HKWorkout:
+      var workoutDetails: [String: Any?] = ["duration": workout.duration]
+      if #available(iOS 16.0, *) {
+        let activeEnergyBurned = workout.statistics(for: HKQuantityType(.activeEnergyBurned))?.sumQuantity()
+        workoutDetails.merge(
+          [
+            "activeEnergyBurned": activeEnergyBurned?.doubleValue(for: HKUnit(from: .kilocalorie)),
+          ],
+          uniquingKeysWith: {(_, other) in other}
+        )
+      }
+      return workoutDetails
+    case _ as HKQuantitySample:
+      return [:]
+    case _ as HKCategorySample:
+      return [:]
+    case _ as HKCorrelation:
+      return [:]
+    default:
+      return [:]
     }
   }
 }
