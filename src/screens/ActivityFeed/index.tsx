@@ -14,7 +14,7 @@ export function ActivityFeed(_props: ActivityFeedProps) {
         <SafeAreaView style={s.safeArea}>
             <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
             <ScrollView contentContainerStyle={s.container}>
-                {activities.map((activity) => (
+                {activities.reverse().map((activity) => (
                     <Text style={s.label} key={activity.id}>
                         {activity.display}
                     </Text>
