@@ -125,7 +125,7 @@ class HealthKitConnector: NSObject {
   }
 
   private func storeUpdateHandler(_ samplesCreated: [HKSample]?,
-                                  _ removedObjects: [HKDeletedObject]?,
+                                  _ objectsRemoved: [HKDeletedObject]?,
                                   _ historyPointAnchor: HKQueryAnchor?,
                                   _ error: Error?) {
     guard error == nil else {
@@ -137,7 +137,7 @@ class HealthKitConnector: NSObject {
       notify(on: .samplesCreated(samples))
     }
 
-    if let objects = removedObjects, !objects.isEmpty {
+    if let objects = objectsRemoved, !objects.isEmpty {
       notify(on: .objectsRemoved(objects))
     }
 
