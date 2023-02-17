@@ -1,10 +1,10 @@
 #import "AppDelegate.h"
+#import "FHIRmHealth-Swift.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 #import <RNNotifications.h>
 
-#import "FHIRmHealth-Swift.h"
 
 @implementation AppDelegate
 
