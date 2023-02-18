@@ -22,7 +22,7 @@ export function useActivityFeed() {
     const [activities, setActivities] = useState<WorkoutFeedSample[]>([]);
 
     useEffect(() => {
-        const subscription = new NativeEventEmitter(NativeModules.HealthKitEventEmitter).addListener(
+        const subscription = new NativeEventEmitter(NativeModules.HealthKitEventChannel).addListener(
             'hk-sample-created',
             async (updates: Array<WorkoutFeedSample>) => {
                 setActivities((existingActivities) => existingActivities.concat(updates));

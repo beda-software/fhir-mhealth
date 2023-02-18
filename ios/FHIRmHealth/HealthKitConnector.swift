@@ -52,19 +52,8 @@ fileprivate enum HealthKitEvents {
   }
 }
 
-@objc(HealthKitEventEmitter)
-class HealthKitEventEmitter: RCTEventEmitter {
-  private(set) var beingObserved = false
-
-  override init() {
-    super.init()
-    HealthKitConnector.shared.useEventEmitter(self)
-  }
-
-  deinit {
-    HealthKitConnector.shared.removeEventEmitter(self)
-  }
-
+@objc(HealthKitEventChannel)
+class HealthKitEventChannel: RCTEventEmitter {
   @objc override class func requiresMainQueueSetup() -> Bool {
     true
   }
@@ -74,19 +63,20 @@ class HealthKitEventEmitter: RCTEventEmitter {
   }
 
   @objc override func startObserving() {
-    self.beingObserved = true
+    HealthKitConnector.shared.connectEventChannel(self)
   }
 
   @objc override func stopObserving() {
-    self.beingObserved = false
+    HealthKitConnector.shared.disconnectEventChannel(self)
   }
 }
 
 @objc
 class HealthKitConnector: NSObject {
   private let store = HKHealthStore()
+  private var runningQuery: HKAnchoredObjectQuery? = nil
   private var queryAnchor: HKQueryAnchor? = HealthKitHistory.restore()
-  private var eventEmitter: HealthKitEventEmitter?
+  private var eventChannels: [HealthKitEventChannel] = []
 
   static let shared = HealthKitConnector()
 
@@ -94,25 +84,31 @@ class HealthKitConnector: NSObject {
     super.init()
   }
 
-  @objc
-  class func sharedInstance() -> HealthKitConnector {
+  @objc class func sharedInstance() -> HealthKitConnector {
     return HealthKitConnector.shared
   }
 
-  func useEventEmitter(_ emitter: HealthKitEventEmitter) {
-    self.eventEmitter = emitter
-  }
-
-  func removeEventEmitter(_ emitter: HealthKitEventEmitter) {
-    if self.eventEmitter === emitter {
-      self.eventEmitter = nil
+  func connectEventChannel(_ channelMediator: HealthKitEventChannel) {
+    self.eventChannels.append(channelMediator)
+    if self.runningQuery == nil {
+      self.launchBackgroundQuery()
     }
   }
 
-  @objc
-  func launchBackgroundQuery() {
+  func disconnectEventChannel(_ channelMediator: HealthKitEventChannel) {
+    self.eventChannels.removeAll(where: {$0 === channelMediator})
+    if self.eventChannels.isEmpty {
+      self.stopBackgroundQuery()
+    }
+  }
+
+  private func launchBackgroundQuery() {
     guard HKHealthStore.isHealthDataAvailable() else {
       logger.debug("HKHealthStore is not supported on this platform")
+      return
+    }
+    guard self.runningQuery == nil else {
+      logger.error("Attempted to launch query while another is in progress")
       return
     }
     store.requestAuthorization(toShare: [], read: [HKObjectType.workoutType()]) { _,_ in
@@ -131,6 +127,14 @@ class HealthKitConnector: NSObject {
           logger.error("Failed to enabled background updates delivery: \(error)")
         }
       }
+      self.runningQuery = anchoredQuery
+    }
+  }
+
+  private func stopBackgroundQuery() {
+    if let query = self.runningQuery {
+      self.store.stop(query)
+      self.runningQuery = nil
     }
   }
 
@@ -164,7 +168,7 @@ class HealthKitConnector: NSObject {
     case .objectsRemoved(let removed):
       updates.append(contentsOf: removed.map({["id": $0.uuid.uuidString]}))
     }
-    self.eventEmitter?.sendEvent(withName: event.code, body: updates)
+    self.eventChannels.forEach({$0.sendEvent(withName: event.code, body: updates)})
   }
 }
 
