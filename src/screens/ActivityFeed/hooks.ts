@@ -23,7 +23,7 @@ export function useActivityFeed() {
 
     useEffect(() => {
         const subscription = new NativeEventEmitter(NativeModules.HealthKitEventChannel).addListener(
-            'hk-sample-created',
+            NativeModules.HealthKitEventChannel.HK_SAMPLE_CREATED,
             async (updates: Array<WorkoutFeedSample>) => {
                 setActivities((existingActivities) => existingActivities.concat(updates));
                 postLocalNotification({

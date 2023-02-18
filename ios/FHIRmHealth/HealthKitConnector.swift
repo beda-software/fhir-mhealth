@@ -35,8 +35,8 @@ fileprivate enum HealthKitEvents {
   case samplesCreated([HKSample])
   case objectsRemoved([HKDeletedObject])
 
-  private static let samplesCreatedEventCode = "hk-sample-created"
-  private static let objectsRemovedEventCode = "hk-object-removed"
+  private static let samplesCreatedEventCode = "HK_SAMPLE_CREATED"
+  private static let objectsRemovedEventCode = "HK_OBJECT_REMOVED"
 
   var code: String {
     switch self {
@@ -68,6 +68,10 @@ class HealthKitEventChannel: RCTEventEmitter {
 
   @objc override func stopObserving() {
     HealthKitConnector.shared.disconnectEventChannel(self)
+  }
+
+  @objc override func constantsToExport() -> [AnyHashable : Any] {
+    HealthKitEvents.list.reduce(into: [String: String](), {$0[$1] = $1})
   }
 }
 
