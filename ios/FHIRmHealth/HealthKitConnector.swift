@@ -313,7 +313,7 @@ extension HKWorkout {
     case .hiking:
       return "Hiking"
     case .hockey:
-      return "Hocket"
+      return "Hockey"
     case .hunting:
       return "Hunting"
     case .lacrosse:
