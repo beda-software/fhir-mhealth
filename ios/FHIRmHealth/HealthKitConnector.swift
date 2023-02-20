@@ -117,7 +117,11 @@ class HealthKitConnector: NSObject {
     }
     store.requestAuthorization(toShare: [], read: [HKObjectType.workoutType()]) { _,_ in
       let anchoredQuery = HKAnchoredObjectQuery(type: HKQuantityType.workoutType(),
-                                                predicate: nil,
+                                                predicate: self.queryAnchor == nil ? HKQuery.predicateForSamples(
+                                                  withStart: Calendar.current.date(byAdding: .day, value: -1, to: .now),
+                                                  end: nil,
+                                                  options: []
+                                                ) : nil,
                                                 anchor: self.queryAnchor,
                                                 limit: HKObjectQueryNoLimit) {_, created, removed, anchor, error in
         self.storeUpdateHandler(created, removed, anchor, error)
