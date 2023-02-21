@@ -1,30 +1,15 @@
 import { useEffect, useState } from 'react';
-import { NativeEventEmitter, NativeModules } from 'react-native';
 
+import { HealthKitEventRegistry, HealthKitWorkout, subscribeHealthKitEvents } from 'services/healthkit';
 import { postLocalNotification } from 'services/notifications';
 
-export interface ActivityFeedSample {
-    id: string;
-    startDate: string;
-    endDate: string;
-    category?: string;
-    code?: string;
-    display?: string;
-}
-
-export interface WorkoutFeedSample extends ActivityFeedSample {
-    readonly category: 'workout';
-    duration?: number;
-    activeEnergyBurned?: number;
-}
-
 export function useActivityFeed() {
-    const [activities, setActivities] = useState<WorkoutFeedSample[]>([]);
+    const [activities, setActivities] = useState<HealthKitWorkout[]>([]);
 
     useEffect(() => {
-        const subscription = new NativeEventEmitter(NativeModules.HealthKitEventChannel).addListener(
-            NativeModules.HealthKitEventChannel.HK_SAMPLE_CREATED,
-            async (updates: Array<WorkoutFeedSample>) => {
+        const subscription = subscribeHealthKitEvents(
+            HealthKitEventRegistry.SampleCreated,
+            async (updates: HealthKitWorkout[]) => {
                 setActivities((existingActivities) => existingActivities.concat(updates));
                 postLocalNotification({
                     title: 'New Workout',

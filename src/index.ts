@@ -2,6 +2,7 @@ import { Navigation } from 'react-native-navigation';
 import { Notifications } from 'react-native-notifications';
 
 import { navigationLayout } from 'screens/ActivityFeed/navigation';
+import { launchBackgroundWorkoutRecordsSync } from 'services/datastream';
 
 Navigation.events().registerAppLaunchedListener(() => {
     Notifications.registerRemoteNotifications();
@@ -18,4 +19,5 @@ Navigation.events().registerAppLaunchedListener(() => {
             },
         },
     });
+    launchBackgroundWorkoutRecordsSync();
 });
