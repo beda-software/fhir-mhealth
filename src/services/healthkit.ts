@@ -47,3 +47,9 @@ export function subscribeHealthKitEvents<P = HealthKitEventPayload>(
 ) {
     return HealthKitEventChannel.addListener(event.__internal_code, handler);
 }
+
+export const HealthKitQueryController = {
+    start: () => NativeModules.HealthKitQueryController.start(),
+    stop: () => NativeModules.HealthKitQueryController.stop(),
+    reset: () => NativeModules.HealthKitQueryController.reset(),
+};

@@ -17,6 +17,8 @@
 		A25AC5DA2999B6D900473801 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A25AC5D92999B6D800473801 /* HealthKit.framework */; };
 		A2B11D5B299AA4C600B9EB1A /* HealthKitConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B11D5A299AA4C600B9EB1A /* HealthKitConnector.swift */; };
 		A2E0849A299D52F100C8E6AF /* HealthKitConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = A2E08499299D52F100C8E6AF /* HealthKitConnector.m */; };
+		A2F2FFCE29A844760020D593 /* HealthKitQueryController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F2FFCD29A844760020D593 /* HealthKitQueryController.m */; };
+		A2F2FFD029A844990020D593 /* HealthKItQueryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F2FFCF29A844990020D593 /* HealthKItQueryController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		A2B11D59299AA4C500B9EB1A /* FHIRmHealth-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FHIRmHealth-Bridging-Header.h"; sourceTree = "<group>"; };
 		A2B11D5A299AA4C600B9EB1A /* HealthKitConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitConnector.swift; path = FHIRmHealth/HealthKitConnector.swift; sourceTree = "<group>"; };
 		A2E08499299D52F100C8E6AF /* HealthKitConnector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HealthKitConnector.m; path = FHIRmHealth/HealthKitConnector.m; sourceTree = "<group>"; };
+		A2F2FFCD29A844760020D593 /* HealthKitQueryController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HealthKitQueryController.m; path = FHIRmHealth/HealthKitQueryController.m; sourceTree = "<group>"; };
+		A2F2FFCF29A844990020D593 /* HealthKItQueryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKItQueryController.swift; path = FHIRmHealth/HealthKItQueryController.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -105,6 +109,8 @@
 				A2B11D5A299AA4C600B9EB1A /* HealthKitConnector.swift */,
 				A2B11D59299AA4C500B9EB1A /* FHIRmHealth-Bridging-Header.h */,
 				A2E08499299D52F100C8E6AF /* HealthKitConnector.m */,
+				A2F2FFCD29A844760020D593 /* HealthKitQueryController.m */,
+				A2F2FFCF29A844990020D593 /* HealthKItQueryController.swift */,
 			);
 			name = FHIRmHealth;
 			sourceTree = "<group>";
@@ -427,9 +433,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2E0849A299D52F100C8E6AF /* HealthKitConnector.m in Sources */,
+				A2F2FFD029A844990020D593 /* HealthKItQueryController.swift in Sources */,
 				A2B11D5B299AA4C600B9EB1A /* HealthKitConnector.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				A2F2FFCE29A844760020D593 /* HealthKitQueryController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

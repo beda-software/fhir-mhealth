@@ -29,6 +29,10 @@ fileprivate class HealthKitHistory {
     }
     return nil
   }
+
+  static func reset() {
+    UserDefaults.standard.removeObject(forKey: PersistanceKeys.historyAnchor)
+  }
 }
 
 fileprivate enum HealthKitQueryStatus: String {
@@ -120,7 +124,7 @@ class HealthKitConnector: NSObject {
     }
   }
 
-  private func launchBackgroundQuery() {
+  func launchBackgroundQuery() {
     guard HKHealthStore.isHealthDataAvailable() else {
       logger.debug("HKHealthStore is not supported on this platform")
       return
@@ -154,12 +158,18 @@ class HealthKitConnector: NSObject {
     }
   }
 
-  private func stopBackgroundQuery() {
+  func stopBackgroundQuery() {
     if let query = self.runningQuery {
       self.store.stop(query)
       self.runningQuery = nil
       self.notify(on: .queryStatusHasChanged(.stopped))
     }
+  }
+
+  func resetBackgroundQuery() {
+    self.stopBackgroundQuery()
+    HealthKitHistory.reset()
+    self.queryAnchor = nil
   }
 
   private func storeUpdateHandler(_ samplesCreated: [HKSample]?,
@@ -181,6 +191,7 @@ class HealthKitConnector: NSObject {
 
     if let anchor = historyPointAnchor {
       HealthKitHistory.checkpoint(at: anchor)
+      self.queryAnchor = anchor
     }
   }
 
