@@ -14,11 +14,14 @@ export function ActivityFeed(_props: ActivityFeedProps) {
         <SafeAreaView style={s.safeArea}>
             <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
             <ScrollView contentContainerStyle={s.container}>
-                {activities.reverse().map((activity) => (
-                    <Text style={s.label} key={activity.id}>
-                        {activity.display}, {activity.activeEnergyBurned} kcal
-                    </Text>
-                ))}
+                {activities
+                    .slice()
+                    .reverse()
+                    .map((activity) => (
+                        <Text style={s.label} key={activity.id}>
+                            {activity.display}, {activity.activeEnergyBurned} kcal
+                        </Text>
+                    ))}
             </ScrollView>
         </SafeAreaView>
     );
