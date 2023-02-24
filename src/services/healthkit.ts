@@ -19,16 +19,31 @@ export interface HealthKitWorkout extends HealthKitSample {
     activeEnergyBurned?: number;
 }
 
-export type HealthKitEvent = { __internal_code: string };
+export enum HealthKitQueryStatus {
+    Running = 'running',
+    Stopped = 'stopped',
+}
+
+export type HealthKitEvent<T> = { __internal_code: string; __payload?: { __type: T } };
 
 export const HealthKitEventRegistry = {
-    get SampleCreated(): HealthKitEvent {
+    get SampleCreated(): HealthKitEvent<HealthKitWorkout[]> {
         return { __internal_code: NativeModules.HealthKitEventChannel.HK_SAMPLE_CREATED };
+    },
+    get QueryStatusHasChanged(): HealthKitEvent<HealthKitQueryStatus> {
+        return { __internal_code: NativeModules.HealthKitEventChannel.HK_QUERY_STATUS_HAS_CHANGED };
     },
 };
 
+type HealthKitEventPayload = NonNullable<
+    (typeof HealthKitEventRegistry)[keyof typeof HealthKitEventRegistry]['__payload']
+>['__type'];
+
 const HealthKitEventChannel = new NativeEventEmitter(NativeModules.HealthKitEventChannel);
 
-export function subscribeHealthKitEvents(event: HealthKitEvent, handler: (eventPayload: HealthKitWorkout[]) => void) {
+export function subscribeHealthKitEvents<P = HealthKitEventPayload>(
+    event: HealthKitEvent<P>,
+    handler: (eventPayload: P) => void,
+) {
     return HealthKitEventChannel.addListener(event.__internal_code, handler);
 }

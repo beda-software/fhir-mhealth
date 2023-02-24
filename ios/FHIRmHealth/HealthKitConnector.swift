@@ -31,12 +31,20 @@ fileprivate class HealthKitHistory {
   }
 }
 
+fileprivate enum HealthKitQueryStatus: String {
+  case running = "running"
+  case stopped = "stopped"
+}
+
 fileprivate enum HealthKitEvents {
   case samplesCreated([HKSample])
   case objectsRemoved([HKDeletedObject])
 
+  case queryStatusHasChanged(HealthKitQueryStatus)
+
   private static let samplesCreatedEventCode = "HK_SAMPLE_CREATED"
   private static let objectsRemovedEventCode = "HK_OBJECT_REMOVED"
+  private static let queryStatusHasChangedEventCode = "HK_QUERY_STATUS_HAS_CHANGED"
 
   var code: String {
     switch self {
@@ -44,11 +52,17 @@ fileprivate enum HealthKitEvents {
       return HealthKitEvents.samplesCreatedEventCode
     case .objectsRemoved:
       return HealthKitEvents.objectsRemovedEventCode
+    case .queryStatusHasChanged:
+      return HealthKitEvents.queryStatusHasChangedEventCode
     }
   }
 
   static var list: [String] {
-    [HealthKitEvents.samplesCreatedEventCode, HealthKitEvents.objectsRemovedEventCode]
+    [
+      HealthKitEvents.samplesCreatedEventCode,
+      HealthKitEvents.objectsRemovedEventCode,
+      HealthKitEvents.queryStatusHasChangedEventCode,
+    ]
   }
 }
 
@@ -136,6 +150,7 @@ class HealthKitConnector: NSObject {
         }
       }
       self.runningQuery = anchoredQuery
+      self.notify(on: .queryStatusHasChanged(.running))
     }
   }
 
@@ -143,6 +158,7 @@ class HealthKitConnector: NSObject {
     if let query = self.runningQuery {
       self.store.stop(query)
       self.runningQuery = nil
+      self.notify(on: .queryStatusHasChanged(.stopped))
     }
   }
 
@@ -169,14 +185,16 @@ class HealthKitConnector: NSObject {
   }
 
   private func notify(on event: HealthKitEvents) {
-    var updates: [[String: Any?]] = []
+    var update: Any?
     switch event {
     case .samplesCreated(let created):
-      updates.append(contentsOf: created.map({$0.summary}))
+      update = created.map({$0.summary})
     case .objectsRemoved(let removed):
-      updates.append(contentsOf: removed.map({["id": $0.uuid.uuidString]}))
+      update = removed.map({["id": $0.uuid.uuidString]})
+    case .queryStatusHasChanged(let status):
+      update = status.rawValue
     }
-    self.eventChannels.forEach({$0.sendEvent(withName: event.code, body: updates)})
+    self.eventChannels.forEach({$0.sendEvent(withName: event.code, body: update)})
   }
 }
 
