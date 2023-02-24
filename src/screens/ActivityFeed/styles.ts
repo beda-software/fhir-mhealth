@@ -12,4 +12,7 @@ export default StyleSheet.create({
         fontSize: 24,
         lineHeight: 30,
     },
+    feedControlsContainer: {
+        gap: 15,
+    },
 });

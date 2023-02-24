@@ -1,15 +1,22 @@
 import { useEffect, useState } from 'react';
 
-import { HealthKitEventRegistry, HealthKitWorkout, subscribeHealthKitEvents } from 'services/healthkit';
+import {
+    HealthKitEventRegistry,
+    HealthKitQueryController,
+    HealthKitQueryStatus,
+    HealthKitWorkout,
+    subscribeHealthKitEvents,
+} from 'services/healthkit';
 import { postLocalNotification } from 'services/notifications';
 
 export function useActivityFeed() {
     const [activities, setActivities] = useState<HealthKitWorkout[]>([]);
+    const [feedStatus, setFeedStatus] = useState<HealthKitQueryStatus | undefined>();
 
     useEffect(() => {
         const subscription = subscribeHealthKitEvents(
             HealthKitEventRegistry.SampleCreated,
-            async (updates: HealthKitWorkout[]) => {
+            (updates: HealthKitWorkout[]) => {
                 setActivities((existingActivities) => existingActivities.concat(updates));
                 postLocalNotification({
                     title: 'New Workout',
@@ -21,5 +28,20 @@ export function useActivityFeed() {
         return () => subscription.remove();
     }, []);
 
-    return activities;
+    useEffect(() => {
+        const subscription = subscribeHealthKitEvents(HealthKitEventRegistry.QueryStatusHasChanged, setFeedStatus);
+
+        return () => subscription.remove();
+    }, []);
+
+    return {
+        activities,
+        isRunning: feedStatus === HealthKitQueryStatus.Running ? true : false,
+        start: HealthKitQueryController.start,
+        stop: HealthKitQueryController.stop,
+        reset: () => {
+            setActivities([]);
+            HealthKitQueryController.reset();
+        },
+    };
 }

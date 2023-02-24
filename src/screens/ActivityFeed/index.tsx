@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StatusBar, ScrollView, Text, useColorScheme } from 'react-native';
+import { SafeAreaView, StatusBar, ScrollView, Text, useColorScheme, Button, Alert, View } from 'react-native';
 
 import { useActivityFeed } from './hooks';
 import s from './styles';
@@ -8,7 +8,7 @@ export interface ActivityFeedProps {}
 
 export function ActivityFeed(_props: ActivityFeedProps) {
     const isDarkMode = useColorScheme() === 'dark';
-    const activities = useActivityFeed();
+    const { activities, start, stop, reset, isRunning } = useActivityFeed();
 
     return (
         <SafeAreaView style={s.safeArea}>
@@ -23,6 +23,27 @@ export function ActivityFeed(_props: ActivityFeedProps) {
                         </Text>
                     ))}
             </ScrollView>
+            <View style={s.feedControlsContainer}>
+                {isRunning ? (
+                    <Button title="Stop feed" onPress={stop} />
+                ) : (
+                    <Button title="Start feed" onPress={start} />
+                )}
+                <Button
+                    title="Reset history"
+                    onPress={() =>
+                        Alert.alert(
+                            'Reset history anchor?',
+                            'Resetting history anchor will result in data duplicates',
+                            [
+                                { text: 'Reset', style: 'destructive', onPress: reset },
+                                { text: 'Cancel', style: 'cancel' },
+                            ],
+                        )
+                    }
+                    color={'red'}
+                />
+            </View>
         </SafeAreaView>
     );
 }
