@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Install project dependencies with yarn
+        run: yarn install
       - name: Build and release
         run: fastlane --version
         env:
