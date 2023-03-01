@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install project dependencies with yarn
-        run: yarn install
+      - name: Install project dependencies
+        run: yarn install && bundle install
       - name: Build and release
-        run: fastlane --version
+        run: bundle exec fastlane --version
         env:
           # GitHub token to pull private repo
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
