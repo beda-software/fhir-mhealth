@@ -23,7 +23,7 @@ jobs:
         run: bundle exec fastlane --version
         env:
           # GitHub token to pull private repo
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
           # The password to decrypt certificates, previously configured with match
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           # App Store Connect API key
