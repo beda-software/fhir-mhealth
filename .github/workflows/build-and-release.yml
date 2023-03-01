@@ -21,10 +21,7 @@ jobs:
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
           # The password to decrypt certificates, previously configured with match
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          # User to access App Store Connect on behalf of
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          # App Store Connect -> App Information -> Apple id
-          APPLICATION_SPECIFIC_APPLE_ID: ${{ secrets.APPLICATION_SPECIFIC_APPLE_ID }}
-          # FASTLANE_USER Apple id portal -> Sign-In and Security -> App-Specific Passwords
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
-          MATCH_READONLY: true
+          # App Store Connect API key
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
