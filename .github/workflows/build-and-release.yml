@@ -18,7 +18,7 @@ jobs:
           ruby-version: '2.7.6'
           bundler-cache: true
       - name: Install project dependencies
-        run: yarn install && bundle install && cd ios && bundle exec pod install
+        run: yarn install && bundle install && cd ios && bundle exec pod install --repo-update
       - name: Build and release
         run: bundle exec fastlane --version
         env:
