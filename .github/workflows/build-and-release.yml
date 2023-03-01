@@ -17,6 +17,14 @@ jobs:
         with:
           ruby-version: '2.7.6'
           bundler-cache: true
+      - name: Restore cached project dependencies
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-build-${{ hashFiles('./yarn.lock') }}-${{ hashFiles('./Gemfile.lock') }}-${{ hashFiles('./ios/Podfile.lock') }}
+          path: |
+            ./node_modules/
+            ./vendor/
+            ./ios/Pods/
       - name: Install project dependencies
         run: yarn install && bundle install && cd ios && bundle exec pod install --repo-update
       - name: Build and release
