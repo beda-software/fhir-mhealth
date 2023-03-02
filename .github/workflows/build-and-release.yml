@@ -34,6 +34,7 @@ jobs:
         run: yarn install && bundle install && cd ios && bundle exec pod install --repo-update
       - name: Build and release
         run: bundle exec fastlane ios staging
+        if: false
         env:
           # GitHub token to pull private repo
           MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
