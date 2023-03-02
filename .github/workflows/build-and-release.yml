@@ -32,8 +32,10 @@ jobs:
             ./ios/Pods/
       - name: Install project dependencies
         run: yarn install && bundle install && cd ios && bundle exec pod install --repo-update
+      - name: Investigate build failures - setup staging app config
+        run: cp ./src/config/staging.ts ./src/config/index.ts
       - name: Investigate build failures - Build jsbundle
-        run: yarn run react-native bundle --entry-file index.js --platform ios --dev false --reset-cache --bundle-output ./scripts/main.jsbundle --assets-dest ./scripts/ --minify false 
+        run: yarn run react-native bundle --entry-file index.js --platform ios --dev false --reset-cache --bundle-output ./scripts/main.jsbundle --assets-dest ./scripts/ --minify false
       - name: Investigate build failures - compile jsbundle with Hermes
         run: ./ios/Pods/hermes-engine/destroot/bin/hermesc -emit-binary -O -out /scripts/main.jsbundle ./scripts/main.jsbundle
       - name: Build and release
