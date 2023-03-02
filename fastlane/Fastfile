@@ -29,6 +29,7 @@ platform :ios do
       profile_name: 'match AppStore software.beda.fhirmhealth.fhirmhealth',
     )
     match(type: "appstore", readonly: true)
+    increment_build_number(build_number: number_of_commits)
     build_ios_app(
       workspace: './ios/FHIRmHealth.xcworkspace',
       clean: true,
