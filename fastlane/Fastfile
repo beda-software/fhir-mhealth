@@ -19,7 +19,7 @@ platform :ios do
   desc "Build and release"
   lane :staging do
     setup_ci if ENV['CI']
-    sh('cp', './src/config/staging.ts', './src/config/index.ts')
+    sh('cp', '../src/config/staging.ts', '../src/config/index.ts')
     update_code_signing_settings(
       use_automatic_signing: false,
       path: './ios/FHIRmHealth.xcodeproj',
