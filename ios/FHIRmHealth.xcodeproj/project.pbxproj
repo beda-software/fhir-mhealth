@@ -497,9 +497,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = FHIRmHealth/FHIRmHealth.entitlements;
 				CODE_SIGN_STYLE = Manual;
-				CODE_SIGN_IDENTITY = "Apple Distribution: Илья Беда (4452VN45AX)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4452VN45AX;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = FHIRmHealth/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -515,7 +513,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = software.beda.fhirmhealth.fhirmhealth;
 				PRODUCT_NAME = FHIRmHealth;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore software.beda.fhirmhealth.fhirmhealth";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -535,9 +532,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = FHIRmHealth/FHIRmHealth.entitlements;
 				CODE_SIGN_STYLE = Manual;
-				CODE_SIGN_IDENTITY = "Apple Distribution: Илья Беда (4452VN45AX)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4452VN45AX;
 				INFOPLIST_FILE = FHIRmHealth/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -552,7 +547,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = software.beda.fhirmhealth.fhirmhealth;
 				PRODUCT_NAME = FHIRmHealth;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore software.beda.fhirmhealth.fhirmhealth";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
