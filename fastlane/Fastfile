@@ -21,6 +21,7 @@ platform :ios do
     setup_ci if ENV['CI']
     update_code_signing_settings(
       use_automatic_signing: false,
+      path: './ios/FHIRmHealth.xcodeproj',
       team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
       bundle_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
       code_sign_identity: 'Apple Distribution: Илья Беда (4452VN45AX)',
