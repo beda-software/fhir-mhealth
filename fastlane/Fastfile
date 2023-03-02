@@ -28,7 +28,11 @@ platform :ios do
       profile_name: 'match AppStore software.beda.fhirmhealth.fhirmhealth',
     )
     match(type: "appstore", readonly: true)
-    build_ios_app(clean: true, suppress_xcode_output: true)
+    build_ios_app(
+      workspace: './ios/FHIRmHealth.xcworkspace',
+      clean: true,
+      suppress_xcode_output: true
+    )
     appstore_api_key = app_store_connect_api_key(
       key_id: ENV['APP_STORE_CONNECT_API_KEY_ID'],
       issuer_id: ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID'],
