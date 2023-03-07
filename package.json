@@ -10,6 +10,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "mobx": "^6.8.0",
+    "mobx-react-lite": "^3.4.0",
+    "mobx-state-tree": "^5.1.7",
     "react": "18.2.0",
     "react-native": "0.71.3",
     "react-native-navigation": "^7.32.0",

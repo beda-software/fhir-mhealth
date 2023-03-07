@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { FC } from 'react';
+import { observer } from 'mobx-react-lite';
 import { SafeAreaView, StatusBar, ScrollView, Text, useColorScheme, Button, Alert, View } from 'react-native';
 
 import { useActivityFeed } from './hooks';
@@ -6,7 +7,7 @@ import s from './styles';
 
 export interface ActivityFeedProps {}
 
-export function ActivityFeed(_props: ActivityFeedProps) {
+export const ActivityFeed: FC<ActivityFeedProps> = observer(function ActivityFeed(_props) {
     const isDarkMode = useColorScheme() === 'dark';
     const { activities, start, stop, reset, isRunning } = useActivityFeed();
 
@@ -46,4 +47,4 @@ export function ActivityFeed(_props: ActivityFeedProps) {
             </View>
         </SafeAreaView>
     );
-}
+});
