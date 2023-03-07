@@ -5,14 +5,17 @@ export default StyleSheet.create({
         flexGrow: 1,
     },
     container: {
-        flexGrow: 1,
         padding: 30,
+    },
+    scrollView: {
+        flexBasis: 1,
     },
     label: {
         fontSize: 24,
         lineHeight: 30,
     },
     feedControlsContainer: {
+        paddingTop: 10,
         gap: 15,
     },
 });

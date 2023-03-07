@@ -13,7 +13,7 @@ export function ActivityFeed(_props: ActivityFeedProps) {
     return (
         <SafeAreaView style={s.safeArea}>
             <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-            <ScrollView contentContainerStyle={s.container}>
+            <ScrollView style={s.scrollView} contentContainerStyle={s.container}>
                 {activities
                     .slice()
                     .reverse()
