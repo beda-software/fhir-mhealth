@@ -14,7 +14,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-FHIRmHealth-FHIRmHealthTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-FHIRmHealth-FHIRmHealthTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A259EFA129B8FF1000D735A1 /* PersistentStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = A259EFA029B8FF1000D735A1 /* PersistentStorage.m */; };
 		A25AC5DA2999B6D900473801 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A25AC5D92999B6D800473801 /* HealthKit.framework */; };
+		A2792DB229B7C1D4001CACC3 /* PersistentStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2792DB129B7C1D4001CACC3 /* PersistentStorage.swift */; };
 		A2B11D5B299AA4C600B9EB1A /* HealthKitConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B11D5A299AA4C600B9EB1A /* HealthKitConnector.swift */; };
 		A2C6DCB929A986D800FB0C87 /* HealthKitEventChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C6DCB829A986D800FB0C87 /* HealthKitEventChannel.swift */; };
 		A2E0849A299D52F100C8E6AF /* HealthKitEventChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A2E08499299D52F100C8E6AF /* HealthKitEventChannel.m */; };
@@ -49,8 +51,10 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-FHIRmHealth.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FHIRmHealth.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = FHIRmHealth/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-FHIRmHealth-FHIRmHealthTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FHIRmHealth-FHIRmHealthTests.release.xcconfig"; path = "Target Support Files/Pods-FHIRmHealth-FHIRmHealthTests/Pods-FHIRmHealth-FHIRmHealthTests.release.xcconfig"; sourceTree = "<group>"; };
+		A259EFA029B8FF1000D735A1 /* PersistentStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PersistentStorage.m; path = FHIRmHealth/PersistentStorage.m; sourceTree = "<group>"; };
 		A25AC5D92999B6D800473801 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		A25AC5DB2999B70000473801 /* FHIRmHealth.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = FHIRmHealth.entitlements; path = FHIRmHealth/FHIRmHealth.entitlements; sourceTree = "<group>"; };
+		A2792DB129B7C1D4001CACC3 /* PersistentStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PersistentStorage.swift; path = FHIRmHealth/PersistentStorage.swift; sourceTree = "<group>"; };
 		A2B11D59299AA4C500B9EB1A /* FHIRmHealth-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FHIRmHealth-Bridging-Header.h"; sourceTree = "<group>"; };
 		A2B11D5A299AA4C600B9EB1A /* HealthKitConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitConnector.swift; path = FHIRmHealth/HealthKitConnector.swift; sourceTree = "<group>"; };
 		A2C6DCB829A986D800FB0C87 /* HealthKitEventChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitEventChannel.swift; path = FHIRmHealth/HealthKitEventChannel.swift; sourceTree = "<group>"; };
@@ -114,6 +118,8 @@
 				A2C6DCB829A986D800FB0C87 /* HealthKitEventChannel.swift */,
 				A2F2FFCD29A844760020D593 /* HealthKitQueryController.m */,
 				A2F2FFCF29A844990020D593 /* HealthKItQueryController.swift */,
+				A2792DB129B7C1D4001CACC3 /* PersistentStorage.swift */,
+				A259EFA029B8FF1000D735A1 /* PersistentStorage.m */,
 			);
 			name = FHIRmHealth;
 			sourceTree = "<group>";
@@ -415,11 +421,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2792DB229B7C1D4001CACC3 /* PersistentStorage.swift in Sources */,
 				A2E0849A299D52F100C8E6AF /* HealthKitEventChannel.m in Sources */,
 				A2F2FFD029A844990020D593 /* HealthKItQueryController.swift in Sources */,
 				A2B11D5B299AA4C600B9EB1A /* HealthKitConnector.swift in Sources */,
 				A2C6DCB929A986D800FB0C87 /* HealthKitEventChannel.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				A259EFA129B8FF1000D735A1 /* PersistentStorage.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A2F2FFCE29A844760020D593 /* HealthKitQueryController.m in Sources */,
 			);
