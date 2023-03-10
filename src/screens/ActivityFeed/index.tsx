@@ -20,7 +20,10 @@ export const ActivityFeed: FC<ActivityFeedProps> = observer(function ActivityFee
                     .reverse()
                     .map((activity) => (
                         <Text style={s.label} key={activity.id}>
-                            {activity.display}, {activity.activeEnergyBurned} kcal
+                            {activity.display}
+                            {activity.activeEnergyBurned !== undefined
+                                ? `, ${Math.round(activity.activeEnergyBurned)} kcal`
+                                : undefined}
                         </Text>
                     ))}
             </ScrollView>
