@@ -1,15 +1,19 @@
 import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
-import { SafeAreaView, StatusBar, ScrollView, Text, useColorScheme, Button, Alert, View } from 'react-native';
+import { SafeAreaView, StatusBar, ScrollView, Text, useColorScheme } from 'react-native';
+import { NavigationComponentProps } from 'react-native-navigation';
 
-import { useActivityFeed } from './hooks';
+import { useActivityFeed, useNavigationControls } from './hooks';
 import s from './styles';
 
 export interface ActivityFeedProps {}
 
-export const ActivityFeed: FC<ActivityFeedProps> = observer(function ActivityFeed(_props) {
+export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = observer(function ActivityFeed(props) {
     const isDarkMode = useColorScheme() === 'dark';
-    const { activities, start, stop, reset, isRunning } = useActivityFeed();
+
+    const { activities, ...controllers } = useActivityFeed();
+
+    useNavigationControls({ componentId: props.componentId, ...controllers });
 
     return (
         <SafeAreaView style={s.safeArea}>
@@ -27,27 +31,6 @@ export const ActivityFeed: FC<ActivityFeedProps> = observer(function ActivityFee
                         </Text>
                     ))}
             </ScrollView>
-            <View style={s.feedControlsContainer}>
-                {isRunning ? (
-                    <Button title="Stop feed" onPress={stop} />
-                ) : (
-                    <Button title="Start feed" onPress={start} />
-                )}
-                <Button
-                    title="Reset history"
-                    onPress={() =>
-                        Alert.alert(
-                            'Reset history anchor?',
-                            'Resetting history anchor will result in data duplicates',
-                            [
-                                { text: 'Reset', style: 'destructive', onPress: reset },
-                                { text: 'Cancel', style: 'cancel' },
-                            ],
-                        )
-                    }
-                    color={'red'}
-                />
-            </View>
         </SafeAreaView>
     );
 });

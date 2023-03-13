@@ -13,6 +13,20 @@ export function navigationLayout(props: ActivityFeedProps): Layout {
                 bottomTab: {
                     text: 'Activity Feed',
                 },
+                topBar: {
+                    leftButtons: [
+                        {
+                            id: 'toggle',
+                        },
+                    ],
+                    rightButtons: [
+                        {
+                            id: 'reset',
+                            text: 'Reset',
+                            color: 'red',
+                        },
+                    ],
+                },
             },
             children: [
                 {
