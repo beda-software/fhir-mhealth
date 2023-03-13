@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@invertase/react-native-apple-authentication": "^2.2.2",
     "mobx": "^6.8.0",
     "mobx-react-lite": "^3.4.0",
     "mobx-state-tree": "^5.1.7",

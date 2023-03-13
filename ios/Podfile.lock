@@ -427,6 +427,8 @@ PODS:
     - React-Core
     - React-RCTImage
     - React-RCTText
+  - RNAppleAuthentication (2.2.2):
+    - React-Core
   - SocketRocket (0.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -493,6 +495,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
+  - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -585,6 +588,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeNavigation:
     :path: "../node_modules/react-native-navigation"
+  RNAppleAuthentication:
+    :path: "../node_modules/@invertase/react-native-apple-authentication"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -638,6 +643,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 7bf0dafc7b727d93c8cb94eb00a9d3753c446c3e
   ReactCommon: 6f65ea5b7d84deb9e386f670dd11ce499ded7b40
   ReactNativeNavigation: dc7c08b2e1bd223ab391add511f1ebad4a8a87a5
+  RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 5ed1699acbba8863755998a4245daa200ff3817b
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
