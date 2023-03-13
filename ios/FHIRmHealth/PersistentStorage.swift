@@ -3,9 +3,9 @@ import React
 
 @objc(PersistentStorage)
 class PersistentStorage: NSObject {
-  @objc func store(_ key: String, data: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+  @objc func store(_ key: String, value: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
     do {
-      let archive = try NSKeyedArchiver.archivedData(withRootObject: NSString(string: data),
+      let archive = try NSKeyedArchiver.archivedData(withRootObject: NSString(string: value),
                                                      requiringSecureCoding: true) as NSData
       var filepath = try constructStoragePath(for: key)
 

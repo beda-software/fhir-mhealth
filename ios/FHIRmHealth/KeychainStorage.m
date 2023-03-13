@@ -1,6 +1,6 @@
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(PersistentStorage, NSObject)
+@interface RCT_EXTERN_MODULE(KeychainStorage, NSObject)
 
 RCT_EXTERN_METHOD(store:(NSString*)key
                   value:(NSString*)value

@@ -19,6 +19,8 @@
 		A2792DB229B7C1D4001CACC3 /* PersistentStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2792DB129B7C1D4001CACC3 /* PersistentStorage.swift */; };
 		A2B11D5B299AA4C600B9EB1A /* HealthKitConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B11D5A299AA4C600B9EB1A /* HealthKitConnector.swift */; };
 		A2C6DCB929A986D800FB0C87 /* HealthKitEventChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C6DCB829A986D800FB0C87 /* HealthKitEventChannel.swift */; };
+		A2D42A8329BF90CE00A100A3 /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D42A8229BF90CE00A100A3 /* KeychainStorage.swift */; };
+		A2D42A8529BF910C00A100A3 /* KeychainStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = A2D42A8429BF910C00A100A3 /* KeychainStorage.m */; };
 		A2E0849A299D52F100C8E6AF /* HealthKitEventChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A2E08499299D52F100C8E6AF /* HealthKitEventChannel.m */; };
 		A2F2FFCE29A844760020D593 /* HealthKitQueryController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F2FFCD29A844760020D593 /* HealthKitQueryController.m */; };
 		A2F2FFD029A844990020D593 /* HealthKItQueryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F2FFCF29A844990020D593 /* HealthKItQueryController.swift */; };
@@ -58,6 +60,8 @@
 		A2B11D59299AA4C500B9EB1A /* FHIRmHealth-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FHIRmHealth-Bridging-Header.h"; sourceTree = "<group>"; };
 		A2B11D5A299AA4C600B9EB1A /* HealthKitConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitConnector.swift; path = FHIRmHealth/HealthKitConnector.swift; sourceTree = "<group>"; };
 		A2C6DCB829A986D800FB0C87 /* HealthKitEventChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKitEventChannel.swift; path = FHIRmHealth/HealthKitEventChannel.swift; sourceTree = "<group>"; };
+		A2D42A8229BF90CE00A100A3 /* KeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeychainStorage.swift; path = FHIRmHealth/KeychainStorage.swift; sourceTree = "<group>"; };
+		A2D42A8429BF910C00A100A3 /* KeychainStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeychainStorage.m; path = FHIRmHealth/KeychainStorage.m; sourceTree = "<group>"; };
 		A2E08499299D52F100C8E6AF /* HealthKitEventChannel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HealthKitEventChannel.m; path = FHIRmHealth/HealthKitEventChannel.m; sourceTree = "<group>"; };
 		A2F2FFCD29A844760020D593 /* HealthKitQueryController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HealthKitQueryController.m; path = FHIRmHealth/HealthKitQueryController.m; sourceTree = "<group>"; };
 		A2F2FFCF29A844990020D593 /* HealthKItQueryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthKItQueryController.swift; path = FHIRmHealth/HealthKItQueryController.swift; sourceTree = "<group>"; };
@@ -120,6 +124,8 @@
 				A2F2FFCF29A844990020D593 /* HealthKItQueryController.swift */,
 				A2792DB129B7C1D4001CACC3 /* PersistentStorage.swift */,
 				A259EFA029B8FF1000D735A1 /* PersistentStorage.m */,
+				A2D42A8229BF90CE00A100A3 /* KeychainStorage.swift */,
+				A2D42A8429BF910C00A100A3 /* KeychainStorage.m */,
 			);
 			name = FHIRmHealth;
 			sourceTree = "<group>";
@@ -424,12 +430,14 @@
 				A2792DB229B7C1D4001CACC3 /* PersistentStorage.swift in Sources */,
 				A2E0849A299D52F100C8E6AF /* HealthKitEventChannel.m in Sources */,
 				A2F2FFD029A844990020D593 /* HealthKItQueryController.swift in Sources */,
+				A2D42A8529BF910C00A100A3 /* KeychainStorage.m in Sources */,
 				A2B11D5B299AA4C600B9EB1A /* HealthKitConnector.swift in Sources */,
 				A2C6DCB929A986D800FB0C87 /* HealthKitEventChannel.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				A259EFA129B8FF1000D735A1 /* PersistentStorage.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A2F2FFCE29A844760020D593 /* HealthKitQueryController.m in Sources */,
+				A2D42A8329BF90CE00A100A3 /* KeychainStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
