@@ -11,7 +11,7 @@ class KeychainStorage: NSObject {
       kSecClass.string: kSecClassGenericPassword,
       kSecAttrAccount.string: key,
       kSecValueData.string: data,
-      kSecAttrAccessible.string: kSecAttrAccessibleWhenUnlocked,
+      kSecAttrAccessible.string: kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
     ]
     if SecItemAdd(query as CFDictionary, nil) == errSecSuccess {
       resolve(nil)
