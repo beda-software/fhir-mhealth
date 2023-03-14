@@ -15,7 +15,7 @@ export default StyleSheet.create({
         lineHeight: 30,
     },
     controlsContainer: {
-        paddingTop: 10,
+        paddingVertical: 15,
         gap: 15,
         alignItems: 'center',
     },
