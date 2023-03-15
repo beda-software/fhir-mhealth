@@ -40,7 +40,7 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
             <View style={s.controlsContainer}>
                 {user.name !== undefined ? (
                     <>
-                        <Text>Signed in as: {user.name}</Text>
+                        <Text style={s.userInfoText}>Signed in as: {user.name}</Text>
                         <Button onPress={signout} title="Sign out" />
                     </>
                 ) : (
