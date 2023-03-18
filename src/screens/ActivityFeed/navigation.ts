@@ -14,18 +14,7 @@ export function navigationLayout(props: ActivityFeedProps): Layout {
                     text: 'Activity Feed',
                 },
                 topBar: {
-                    leftButtons: [
-                        {
-                            id: 'toggle',
-                        },
-                    ],
-                    rightButtons: [
-                        {
-                            id: 'reset',
-                            text: 'Reset',
-                            color: 'red',
-                        },
-                    ],
+                    visible: false,
                 },
             },
             children: [
@@ -33,12 +22,6 @@ export function navigationLayout(props: ActivityFeedProps): Layout {
                     component: {
                         name: componentName,
                         passProps: props,
-                        options: {
-                            topBar: {
-                                noBorder: true,
-                                title: { text: 'Activity Feed' },
-                            },
-                        },
                     },
                 },
             ],
