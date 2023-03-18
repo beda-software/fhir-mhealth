@@ -10,6 +10,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-regular-svg-icons": "^6.3.0",
+    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/react-native-fontawesome": "^0.3.0",
     "@invertase/react-native-apple-authentication": "^2.2.2",
     "mobx": "^6.8.0",
     "mobx-react-lite": "^3.4.0",
@@ -17,7 +21,8 @@
     "react": "18.2.0",
     "react-native": "0.71.3",
     "react-native-navigation": "^7.32.0",
-    "react-native-notifications": "^4.3.3"
+    "react-native-notifications": "^4.3.3",
+    "react-native-svg": "^13.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
