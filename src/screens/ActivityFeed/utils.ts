@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 
 import { HealthKitWorkout } from 'services/healthkit';
+import { formatDuration } from 'utils/datetime/duration';
 
 export interface Activity {
     sample: HealthKitWorkout;
@@ -17,7 +18,7 @@ export function makeActivitiesCalendar(workouts: HealthKitWorkout[]): Map<string
         let sameDateActivities = activitiesCalendar.get(effectiveDateTime) ?? [];
         sameDateActivities.push({
             sample: workout,
-            duration: duration.hours !== 0 ? duration.toFormat("h 'hr' m 'min'") : duration.toFormat("m 'min'"),
+            duration: formatDuration(duration),
         });
         activitiesCalendar.set(effectiveDateTime, sameDateActivities);
         return activitiesCalendar;
