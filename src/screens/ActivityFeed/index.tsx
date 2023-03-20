@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
-import { SafeAreaView, StatusBar, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView, StatusBar, Text, View, SectionList, SectionListData } from 'react-native';
 import { NavigationComponentProps } from 'react-native-navigation';
 
 import { useStateTree } from 'models';
@@ -8,7 +8,7 @@ import { useAuthentication } from 'services/auth';
 import { AuthButton } from 'components/AuthButton';
 import { Button } from 'components/Button';
 
-import { useActivityFeed } from './hooks';
+import { ActivityFeedItem, ActivityFeedSection, useActivityFeed } from './hooks';
 import s from './styles';
 
 export interface ActivityFeedProps {}
@@ -36,19 +36,14 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                         <Button icon={'rotate-right'} onPress={controllers.reset} />
                     </View>
                 </View>
-                <ScrollView style={s.scrollView} contentContainerStyle={s.scrollViewContent}>
-                    {activities
-                        .slice()
-                        .reverse()
-                        .map((activity) => (
-                            <View key={activity.id}>
-                                <Text style={s.label}>{activity.display}</Text>
-                                {activity.activeEnergyBurned !== undefined ? (
-                                    <Text style={s.energy}>{Math.round(activity.activeEnergyBurned)} kcal</Text>
-                                ) : undefined}
-                            </View>
-                        ))}
-                </ScrollView>
+                <SectionList
+                    sections={activities}
+                    keyExtractor={(activity) => activity.sample.id}
+                    renderSectionHeader={ActivityFeedSectionHeader}
+                    renderItem={ActivityFeedSectionItem}
+                    style={s.sectionList}
+                    contentContainerStyle={s.sectionListContent}
+                />
                 <View style={s.signInContainer}>
                     {user.name !== undefined ? (
                         <>
@@ -66,3 +61,29 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
         </SafeAreaView>
     );
 });
+
+function ActivityFeedSectionHeader(props: { section: SectionListData<ActivityFeedItem, ActivityFeedSection> }) {
+    return (
+        <View style={s.sectionHeader}>
+            <View style={s.sectionHeaderTitle}>
+                <Text style={s.sectionHeaderTitleText}>{props.section.title}</Text>
+            </View>
+        </View>
+    );
+}
+
+function ActivityFeedSectionItem({ item: activity }: { item: ActivityFeedItem }) {
+    return (
+        <View style={s.sectionItem}>
+            <View style={s.sectionItemActivity}>
+                <Text style={s.sectionItemActivityLabelText}>{activity.sample.display}</Text>
+                {activity.sample.activeEnergyBurned !== undefined ? (
+                    <Text style={s.sectionItemActivityDetailsText}>
+                        {Math.round(activity.sample.activeEnergyBurned)} kcal
+                    </Text>
+                ) : undefined}
+            </View>
+            <Text style={s.sectionItemActivityDetailsText}>{activity.duration}</Text>
+        </View>
+    );
+}

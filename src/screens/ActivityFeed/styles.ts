@@ -22,11 +22,11 @@ export default StyleSheet.create({
         flexDirection: 'row',
         gap: 16,
     },
-    scrollView: {
+    sectionList: {
         flexBasis: 1,
         marginTop: 40,
     },
-    scrollViewContent: {
+    sectionListContent: {
         gap: 24,
     },
     title: {
@@ -35,20 +35,44 @@ export default StyleSheet.create({
         lineHeight: 48,
         fontWeight: '800',
     },
-    label: {
+    sectionHeader: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    sectionHeaderTitle: {
+        backgroundColor: 'white',
+        borderRadius: 14,
+        paddingVertical: 5,
+        paddingHorizontal: 16,
+    },
+    sectionHeaderTitleText: {
+        ...font.primary,
+        color: 'black',
+        fontSize: 14,
+        lineHeight: 18,
+        fontWeight: '500',
+    },
+    sectionItem: {
+        flexDirection: 'row',
+        gap: 16,
+    },
+    sectionItemActivity: {
+        flex: 1,
+    },
+    sectionItemActivityLabelText: {
         ...font.primary,
         fontSize: 24,
         lineHeight: 29,
         fontWeight: '800',
     },
-    energy: {
+    sectionItemActivityDetailsText: {
         ...font.primary,
         fontSize: 24,
         lineHeight: 29,
         fontWeight: '400',
     },
     signInContainer: {
-        paddingVertical: 15,
+        paddingTop: 16,
         gap: 8,
         alignItems: 'center',
     },
