@@ -43,6 +43,7 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                     renderItem={ActivityFeedSectionItem}
                     style={s.sectionList}
                     contentContainerStyle={s.sectionListContent}
+                    showsVerticalScrollIndicator={false}
                 />
                 <View style={s.signInContainer}>
                     {user.name !== undefined ? (
