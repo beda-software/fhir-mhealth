@@ -42,7 +42,7 @@
 		</dict>
 	</dict>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Read and understand health data</string>
+	<string>Read and synchronize health data to Beda EMR</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Update health data records</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

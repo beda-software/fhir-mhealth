@@ -81,5 +81,6 @@ export default StyleSheet.create({
         fontSize: 13,
         lineHeight: 18,
         fontWeight: '400',
+        textAlign: 'center',
     },
 });

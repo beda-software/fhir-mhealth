@@ -54,7 +54,9 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                     ) : (
                         <>
                             <AuthButton />
-                            <Text style={s.signInDescriptionText}>{}</Text>
+                            <Text style={s.signInDescriptionText}>
+                                Unique identifier will be associated with your data
+                            </Text>
                         </>
                     )}
                 </View>
