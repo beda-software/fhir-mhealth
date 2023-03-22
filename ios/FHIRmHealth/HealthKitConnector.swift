@@ -54,19 +54,13 @@ class HealthKitConnector: NSObject {
 
   func connectEventChannel(_ channelMediator: HealthKitEventChannel) {
     self.eventChannels.append(channelMediator)
-    if self.runningQuery == nil {
-      self.launchBackgroundQuery()
-    }
   }
 
   func disconnectEventChannel(_ channelMediator: HealthKitEventChannel) {
     self.eventChannels.removeAll(where: {$0 === channelMediator})
-    if self.eventChannels.isEmpty {
-      self.stopBackgroundQuery()
-    }
   }
 
-  func launchBackgroundQuery() {
+  @objc func launchBackgroundQuery() {
     guard HKHealthStore.isHealthDataAvailable() else {
       logger.debug("HKHealthStore is not supported on this platform")
       return

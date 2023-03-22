@@ -20,6 +20,8 @@
   [ReactNativeNavigation bootstrapWithBridge:bridge];
   [RNNotifications startMonitorNotifications];
 
+  [[HealthKitConnector sharedInstance] launchBackgroundQuery];
+
   return YES;
 }
 
