@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 
 export enum HealthKitSampleCategory {
@@ -52,4 +53,26 @@ export const HealthKitQueryController = {
     start: () => NativeModules.HealthKitQueryController.start(),
     stop: () => NativeModules.HealthKitQueryController.stop(),
     reset: () => NativeModules.HealthKitQueryController.reset(),
+    status: (): Promise<HealthKitQueryStatus.Running | HealthKitQueryStatus.Stopped> =>
+        NativeModules.HealthKitQueryController.status(),
 };
+
+export function useHealthKitQueryStatus() {
+    const [status, setStatus] = useState<HealthKitQueryStatus>();
+
+    useEffect(() => {
+        HealthKitQueryController.status().then((currentStatus) =>
+            setStatus(
+                currentStatus === HealthKitQueryStatus.Running
+                    ? HealthKitQueryStatus.Running
+                    : HealthKitQueryStatus.Stopped,
+            ),
+        );
+
+        const subscription = subscribeHealthKitEvents(HealthKitEventRegistry.QueryStatusHasChanged, setStatus);
+
+        return () => subscription.remove();
+    }, []);
+
+    return status;
+}

@@ -45,6 +45,10 @@ class HealthKitConnector: NSObject {
 
   static let shared = HealthKitConnector()
 
+  var queryStatus: HealthKitQueryStatus {
+    runningQuery == nil ? .stopped : .running
+  }
+
   private override init() {
     super.init()
   }

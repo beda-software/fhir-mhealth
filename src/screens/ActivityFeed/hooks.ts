@@ -7,6 +7,7 @@ import {
     HealthKitQueryStatus,
     HealthKitWorkout,
     subscribeHealthKitEvents,
+    useHealthKitQueryStatus,
 } from 'services/healthkit';
 import { postLocalNotification } from 'services/notifications';
 
@@ -21,7 +22,7 @@ export interface ActivityFeedSection {
 
 export function useActivityFeed() {
     const [activities, setActivities] = useState<HealthKitWorkout[]>([]);
-    const [feedStatus, setFeedStatus] = useState<HealthKitQueryStatus>();
+    const feedStatus = useHealthKitQueryStatus();
 
     useEffect(() => {
         const subscription = subscribeHealthKitEvents(
@@ -34,12 +35,6 @@ export function useActivityFeed() {
                 });
             },
         );
-
-        return () => subscription.remove();
-    }, []);
-
-    useEffect(() => {
-        const subscription = subscribeHealthKitEvents(HealthKitEventRegistry.QueryStatusHasChanged, setFeedStatus);
 
         return () => subscription.remove();
     }, []);

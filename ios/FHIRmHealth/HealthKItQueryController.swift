@@ -11,4 +11,8 @@ class HealthKitQueryController: NSObject {
   @objc func reset() {
     HealthKitConnector.shared.resetBackgroundQuery()
   }
+
+  @objc func status(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+    resolve(HealthKitConnector.shared.queryStatus.rawValue)
+  }
 }
