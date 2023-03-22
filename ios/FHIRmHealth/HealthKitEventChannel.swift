@@ -51,7 +51,7 @@ class HealthKitEventChannel: RCTEventEmitter {
   }
 
   @objc override class func requiresMainQueueSetup() -> Bool {
-    true
+    false
   }
 
   @objc override func supportedEvents() -> [String] {
