@@ -21,7 +21,7 @@ export interface ActivityFeedSection {
 
 export function useActivityFeed() {
     const [activities, setActivities] = useState<HealthKitWorkout[]>([]);
-    const [feedStatus, setFeedStatus] = useState<HealthKitQueryStatus>(HealthKitQueryStatus.Running);
+    const [feedStatus, setFeedStatus] = useState<HealthKitQueryStatus>();
 
     useEffect(() => {
         const subscription = subscribeHealthKitEvents(

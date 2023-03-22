@@ -5,7 +5,7 @@ enum HealthKitQueryStatus: String {
   case stopped = "stopped"
 }
 
-enum HealthKitEvents {
+enum HealthKitEvent {
   case samplesCreated([HKSample])
   case objectsRemoved([HKDeletedObject])
 
@@ -18,31 +18,44 @@ enum HealthKitEvents {
   var code: String {
     switch self {
     case .samplesCreated:
-      return HealthKitEvents.samplesCreatedEventCode
+      return HealthKitEvent.samplesCreatedEventCode
     case .objectsRemoved:
-      return HealthKitEvents.objectsRemovedEventCode
+      return HealthKitEvent.objectsRemovedEventCode
     case .queryStatusHasChanged:
-      return HealthKitEvents.queryStatusHasChangedEventCode
+      return HealthKitEvent.queryStatusHasChangedEventCode
     }
   }
 
-  static var list: [String] {
+  static var events: [String] {
     [
-      HealthKitEvents.samplesCreatedEventCode,
-      HealthKitEvents.objectsRemovedEventCode,
-      HealthKitEvents.queryStatusHasChangedEventCode,
+      HealthKitEvent.samplesCreatedEventCode,
+      HealthKitEvent.objectsRemovedEventCode,
+      HealthKitEvent.queryStatusHasChangedEventCode,
     ]
   }
 }
 
 @objc(HealthKitEventChannel)
 class HealthKitEventChannel: RCTEventEmitter {
+  func notify(of event: HealthKitEvent) {
+    var update: Any?
+    switch event {
+    case .samplesCreated(let created):
+      update = created.map({$0.summary})
+    case .objectsRemoved(let removed):
+      update = removed.map({["id": $0.uuid.uuidString]})
+    case .queryStatusHasChanged(let status):
+      update = status.rawValue
+    }
+    self.sendEvent(withName: event.code, body: update)
+  }
+
   @objc override class func requiresMainQueueSetup() -> Bool {
     true
   }
 
   @objc override func supportedEvents() -> [String] {
-    HealthKitEvents.list
+    HealthKitEvent.events
   }
 
   @objc override func startObserving() {
@@ -54,6 +67,6 @@ class HealthKitEventChannel: RCTEventEmitter {
   }
 
   @objc override func constantsToExport() -> [AnyHashable : Any] {
-    HealthKitEvents.list.reduce(into: [String: String](), {$0[$1] = $1})
+    HealthKitEvent.events.reduce(into: [String: String](), {$0[$1] = $1})
   }
 }

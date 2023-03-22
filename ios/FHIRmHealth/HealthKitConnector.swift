@@ -41,6 +41,7 @@ class HealthKitConnector: NSObject {
   private var runningQuery: HKAnchoredObjectQuery? = nil
   private var queryAnchor: HKQueryAnchor? = HealthKitHistory.restore()
   private var eventChannels: [HealthKitEventChannel] = []
+  private var eventDeliveryQueue: [HealthKitEvent] = []
 
   static let shared = HealthKitConnector()
 
@@ -54,6 +55,7 @@ class HealthKitConnector: NSObject {
 
   func connectEventChannel(_ channelMediator: HealthKitEventChannel) {
     self.eventChannels.append(channelMediator)
+    self.eventDeliveryQueue.forEach({channelMediator.notify(of: $0)})
   }
 
   func disconnectEventChannel(_ channelMediator: HealthKitEventChannel) {
@@ -90,7 +92,7 @@ class HealthKitConnector: NSObject {
         }
       }
       self.runningQuery = anchoredQuery
-      self.notify(on: .queryStatusHasChanged(.running))
+      self.distribute(event: .queryStatusHasChanged(.running))
     }
   }
 
@@ -98,7 +100,7 @@ class HealthKitConnector: NSObject {
     if let query = self.runningQuery {
       self.store.stop(query)
       self.runningQuery = nil
-      self.notify(on: .queryStatusHasChanged(.stopped))
+      self.distribute(event: .queryStatusHasChanged(.stopped))
     }
   }
 
@@ -118,11 +120,11 @@ class HealthKitConnector: NSObject {
     }
 
     if let samples = samplesCreated, !samples.isEmpty {
-      notify(on: .samplesCreated(samples))
+      distribute(event: .samplesCreated(samples))
     }
 
     if let objects = objectsRemoved, !objects.isEmpty {
-      notify(on: .objectsRemoved(objects))
+      distribute(event: .objectsRemoved(objects))
     }
 
     if let anchor = historyPointAnchor {
@@ -131,17 +133,12 @@ class HealthKitConnector: NSObject {
     }
   }
 
-  private func notify(on event: HealthKitEvents) {
-    var update: Any?
-    switch event {
-    case .samplesCreated(let created):
-      update = created.map({$0.summary})
-    case .objectsRemoved(let removed):
-      update = removed.map({["id": $0.uuid.uuidString]})
-    case .queryStatusHasChanged(let status):
-      update = status.rawValue
+  private func distribute(event: HealthKitEvent) {
+    if self.eventChannels.isEmpty {
+      self.eventDeliveryQueue.append(event)
+    } else {
+      self.eventChannels.forEach({$0.notify(of: event)})
     }
-    self.eventChannels.forEach({$0.sendEvent(withName: event.code, body: update)})
   }
 }
 
