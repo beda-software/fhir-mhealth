@@ -2,7 +2,7 @@ import { Navigation } from 'react-native-navigation';
 import { Notifications } from 'react-native-notifications';
 
 import { navigationLayout } from 'screens/ActivityFeed/navigation';
-import { launchBackgroundWorkoutRecordsSync } from 'services/datastream';
+import { startBackgroundWorkoutRecordsSync } from 'services/datastream';
 import { restoreApplicationState } from 'models';
 import { preloadIconsLibraryRegistry } from 'styles/icons-library';
 
@@ -25,5 +25,6 @@ Navigation.events().registerAppLaunchedListener(async () => {
             },
         },
     });
-    launchBackgroundWorkoutRecordsSync();
+
+    startBackgroundWorkoutRecordsSync();
 });

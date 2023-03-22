@@ -9,7 +9,6 @@ import {
     subscribeHealthKitEvents,
     useHealthKitQueryStatus,
 } from 'services/healthkit';
-import { postLocalNotification } from 'services/notifications';
 
 import { Activity, makeActivitiesCalendar } from './utils';
 
@@ -29,10 +28,6 @@ export function useActivityFeed() {
             HealthKitEventRegistry.SampleCreated,
             (updates: HealthKitWorkout[]) => {
                 setActivities((existingActivities) => existingActivities.concat(updates));
-                postLocalNotification({
-                    title: 'New Workout',
-                    body: `The most recent activities are: ${updates.map(({ display }) => display).join(', ')}`,
-                });
             },
         );
 
