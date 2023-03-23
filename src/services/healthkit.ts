@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 
 export enum HealthKitSampleCategory {
@@ -75,4 +75,21 @@ export function useHealthKitQueryStatus() {
     }, []);
 
     return status;
+}
+
+export function useHealthKitWorkouts(): [HealthKitWorkout[], React.Dispatch<React.SetStateAction<HealthKitWorkout[]>>] {
+    const [workouts, setWorkouts] = useState<HealthKitWorkout[]>([]);
+
+    useEffect(() => {
+        const subscription = subscribeHealthKitEvents(
+            HealthKitEventRegistry.SampleCreated,
+            (updates: HealthKitWorkout[]) => {
+                setWorkouts((existingWorkouts) => existingWorkouts.concat(updates));
+            },
+        );
+
+        return () => subscription.remove();
+    }, []);
+
+    return [workouts, setWorkouts];
 }
