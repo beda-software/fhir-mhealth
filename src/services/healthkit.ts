@@ -29,10 +29,10 @@ export type HealthKitEvent<T> = { __internal_code: string; __payload?: { __type:
 
 export const HealthKitEventRegistry = {
     get SampleCreated(): HealthKitEvent<HealthKitWorkout[]> {
-        return { __internal_code: NativeModules.HealthKitEventChannel.HK_SAMPLE_CREATED };
+        return { __internal_code: NativeModules.HealthKitEventChannel.getConstants().HK_SAMPLE_CREATED };
     },
     get QueryStatusHasChanged(): HealthKitEvent<HealthKitQueryStatus> {
-        return { __internal_code: NativeModules.HealthKitEventChannel.HK_QUERY_STATUS_HAS_CHANGED };
+        return { __internal_code: NativeModules.HealthKitEventChannel.getConstants().HK_QUERY_STATUS_HAS_CHANGED };
     },
 };
 
