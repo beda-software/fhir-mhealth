@@ -4,6 +4,8 @@ import { useCallback, useMemo } from 'react';
 import { useStateTree } from 'models';
 import { KeychainStorage } from 'services/storage';
 
+const AUTH_IDENTITY_KEYCHAIN_PATH = 'apple_identity';
+
 export enum AuthStatus {
     Authenticated = 1,
     NotAuthenticated = 2,
@@ -24,13 +26,17 @@ export interface NotAuthenticated extends AuthState {
     readonly status: AuthStatus.NotAuthenticated;
 }
 
+export async function getUserIdentity() {
+    return KeychainStorage.retrieve<Authenticated>(AUTH_IDENTITY_KEYCHAIN_PATH);
+}
+
 export function useAuthentication() {
     const { user } = useStateTree();
 
     const persistAuthenticationDetails = useCallback(
         (authenticationDetails: Authenticated) => {
             user.changeName(authenticationDetails.username);
-            KeychainStorage.store('apple_identity', authenticationDetails);
+            KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticationDetails);
         },
         [user],
     );
@@ -45,7 +51,7 @@ export function useAuthentication() {
 
     const signout = useCallback(() => {
         user.changeName(undefined);
-        KeychainStorage.remove('apple_identity');
+        KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
     }, [user]);
 
     return useMemo(
