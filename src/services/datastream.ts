@@ -7,6 +7,9 @@ export function startBackgroundWorkoutRecordsSync() {
         subscribeHealthKitEvents(HealthKitEventRegistry.SampleCreated, async (workouts: HealthKitWorkout[]) => {
             fetch(DATASTREAM_API_URL, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
                     records: workouts.map((r) => ({
                         sid: r.id,
