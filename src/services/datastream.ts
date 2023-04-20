@@ -12,7 +12,7 @@ export function startBackgroundWorkoutRecordsSync() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    ...(identity ? { Authorization: `Bearer: ${identity.jwt}` } : undefined),
+                    ...(identity ? { Authorization: `Bearer ${identity.jwt}` } : undefined),
                 },
                 body: JSON.stringify({
                     records: workouts.map((r) => ({
