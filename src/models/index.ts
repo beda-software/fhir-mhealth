@@ -3,11 +3,13 @@ import { applySnapshot, Instance, onSnapshot, types } from 'mobx-state-tree';
 
 import { PersistentStorage } from 'services/storage';
 import { UserModel } from 'models/user';
+import { ActivityModel } from 'models/activity';
 
 const PERSISTENCE_KEY = 'statetree.snapshot';
 
 const StateTreeModel = types.model('StateTreeModel').props({
     user: types.optional(UserModel, {}),
+    activity: types.optional(ActivityModel, {}),
 });
 
 export interface StateTree extends Instance<typeof StateTreeModel> {}

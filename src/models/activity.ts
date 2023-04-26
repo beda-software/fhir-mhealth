@@ -1,5 +1,7 @@
 import { Instance, types } from 'mobx-state-tree';
 
+const WORKOUTS_HISTORY_TO_KEEP = 30;
+
 const ActivitySummaryModel = types.model('ActivitySummaryModel').props({
     activeEnergyBurned: types.maybe(types.number),
     activeEnergyBurnedGoal: types.maybe(types.number),
@@ -38,3 +40,27 @@ const WorkoutSampleModel = types.model('WorkoutSampleModel').props({
 const WorkoutModel = types.compose('WorkoutModel', ActivitySampleModel, WorkoutSampleModel);
 
 export interface Workout extends Instance<typeof WorkoutModel> {}
+
+export const ActivityModel = types
+    .model('ActivityModel')
+    .props({
+        workouts: types.array(WorkoutModel),
+        summary: types.maybe(ActivitySummaryModel),
+    })
+    .actions((self) => ({
+        pushWorkouts: (workouts: Workout[]) => {
+            for (const workout of workouts) {
+                self.workouts.push(workout);
+                if (self.workouts.length > WORKOUTS_HISTORY_TO_KEEP) {
+                    self.workouts.shift();
+                }
+            }
+        },
+        updateSummary: (summary: ActivitySummary | undefined) => {
+            self.summary = summary;
+        },
+        clear: () => {
+            self.workouts.splice(0, self.workouts.length);
+            self.summary = undefined;
+        },
+    }));
