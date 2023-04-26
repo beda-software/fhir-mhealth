@@ -14,10 +14,10 @@ import s from './styles';
 export interface ActivityFeedProps {}
 
 export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = observer(function ActivityFeed(_props) {
-    const { user } = useStateTree();
+    const { user, activity } = useStateTree();
     const { signout } = useAuthentication();
 
-    const { activities, ...controllers } = useActivityFeed();
+    const { activities, ...controllers } = useActivityFeed(activity);
 
     return (
         <SafeAreaView style={s.safeArea}>
@@ -38,7 +38,7 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                 </View>
                 <SectionList
                     sections={activities}
-                    keyExtractor={(activity) => activity.sample.id}
+                    keyExtractor={({ sample }) => sample.id}
                     renderSectionHeader={ActivityFeedSectionHeader}
                     renderItem={ActivityFeedSectionItem}
                     style={s.sectionList}

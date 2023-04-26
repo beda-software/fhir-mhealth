@@ -1,14 +1,11 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { Alert } from 'react-native';
 
-import {
-    HealthKitQueryController,
-    HealthKitQueryStatus,
-    useHealthKitQueryStatus,
-    useHealthKitWorkouts,
-} from 'services/healthkit';
+import { HealthKitQueryController, HealthKitQueryStatus, useHealthKitQueryStatus } from 'services/healthkit';
 
 import { Activity, makeActivitiesCalendar } from './utils';
+import { StateTree } from 'models';
+import { Workout } from 'models/activity';
 
 export type ActivityFeedItem = Activity;
 
@@ -17,22 +14,11 @@ export interface ActivityFeedSection {
     data: ActivityFeedItem[];
 }
 
-export function useActivityFeed() {
-    const [workouts, setWorkouts] = useHealthKitWorkouts();
+export function useActivityFeed(activity: StateTree['activity']) {
     const feedStatus = useHealthKitQueryStatus();
 
     return {
-        activities: useMemo(
-            () =>
-                Array.from(makeActivitiesCalendar(workouts.slice().reverse())).reduce<ActivityFeedSection[]>(
-                    (sections, [date, oneDayActivities]) => {
-                        sections.push({ title: date, data: oneDayActivities });
-                        return sections;
-                    },
-                    [],
-                ),
-            [workouts],
-        ),
+        activities: convertToActivitySections(activity.workouts),
         isRunning: feedStatus === HealthKitQueryStatus.Running ? true : false,
         start: HealthKitQueryController.start,
         stop: HealthKitQueryController.stop,
@@ -42,13 +28,23 @@ export function useActivityFeed() {
                     text: 'Reset',
                     style: 'destructive',
                     onPress: () => {
-                        setWorkouts([]);
+                        activity.clear();
                         HealthKitQueryController.reset();
                         HealthKitQueryController.start();
                     },
                 },
                 { text: 'Cancel', style: 'cancel' },
             ]);
-        }, [setWorkouts]),
+        }, [activity]),
     };
+}
+
+function convertToActivitySections(workouts: readonly Workout[]) {
+    return Array.from(makeActivitiesCalendar(workouts.slice().reverse())).reduce<ActivityFeedSection[]>(
+        (sections, [date, oneDayActivities]) => {
+            sections.push({ title: date, data: oneDayActivities });
+            return sections;
+        },
+        [],
+    );
 }
