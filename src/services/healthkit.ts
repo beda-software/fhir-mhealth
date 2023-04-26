@@ -20,6 +20,17 @@ export interface HealthKitWorkout extends HealthKitSample {
     activeEnergyBurned?: number;
 }
 
+export interface HealthKitActivitySummary {
+    activeEnergyBurned?: number;
+    activeEnergyBurnedGoal?: number;
+    moveTime?: number;
+    moveTimeGoal?: number;
+    exerciesTime?: number;
+    standHours?: number;
+    exerciseTimeGoal?: number;
+    standHoursGoal?: number;
+}
+
 export enum HealthKitQueryStatus {
     Running = 'running',
     Stopped = 'stopped',
@@ -55,6 +66,11 @@ export const HealthKitQueryController = {
     reset: () => NativeModules.HealthKitQueryController.reset(),
     status: (): Promise<HealthKitQueryStatus.Running | HealthKitQueryStatus.Stopped> =>
         NativeModules.HealthKitQueryController.status(),
+};
+
+export const HealthKitQuery = {
+    activitySummary: (): Promise<HealthKitActivitySummary | undefined> =>
+        NativeModules.HealthKitQuery.activitySummary(),
 };
 
 export function useHealthKitQueryStatus() {

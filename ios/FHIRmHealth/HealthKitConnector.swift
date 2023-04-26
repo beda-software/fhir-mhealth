@@ -35,6 +35,11 @@ fileprivate class HealthKitHistory {
   }
 }
 
+enum HealthKitConnectorError: Error {
+  case notAvailable
+  case queryExecutionError(message: String)
+}
+
 @objc
 class HealthKitConnector: NSObject {
   private let store = HKHealthStore()
@@ -51,6 +56,8 @@ class HealthKitConnector: NSObject {
 
   private override init() {
     super.init()
+    store.requestAuthorization(toShare: [],
+                               read: [HKObjectType.workoutType(), HKObjectType.activitySummaryType()]) { _,_ in }
   }
 
   @objc class func sharedInstance() -> HealthKitConnector {
@@ -114,6 +121,23 @@ class HealthKitConnector: NSObject {
     self.queryAnchor = nil
   }
 
+  func queryActivitySummary(_ completion: @escaping (HKActivitySummary?) -> Void) throws -> Void {
+    guard HKHealthStore.isHealthDataAvailable() else {
+      throw HealthKitConnectorError.notAvailable
+    }
+
+    store.requestAuthorization(toShare: [], read: [HKObjectType.activitySummaryType()]) { _,_ in
+      let todayCalendarDay = Calendar.current.dateComponents([.day, .month, .year, .calendar], from: .now)
+
+      let todaySummaryPredicate = HKQuery.predicate(forActivitySummariesBetweenStart: todayCalendarDay,
+                                                    end: todayCalendarDay)
+      let query = HKActivitySummaryQuery(predicate: todaySummaryPredicate) {_,summaries,_ in
+        completion(summaries?.first)
+      }
+      self.store.execute(query)
+    }
+  }
+
   private func storeUpdateHandler(_ samplesCreated: [HKSample]?,
                                   _ objectsRemoved: [HKDeletedObject]?,
                                   _ historyPointAnchor: HKQueryAnchor?,
@@ -143,6 +167,29 @@ class HealthKitConnector: NSObject {
     } else {
       self.eventChannels.forEach({$0.notify(of: event)})
     }
+  }
+}
+
+extension HKActivitySummary {
+  var serialized: [String: Double?] {
+    var activitySummary = [
+      "activeEnergyBurned": self.activeEnergyBurned.doubleValue(for: .kilocalorie()),
+      "activeEnergyBurnedGoal": self.activeEnergyBurnedGoal.doubleValue(for: .kilocalorie()),
+      "moveTime": self.appleMoveTime.doubleValue(for: .kilocalorie()),
+      "moveTimeGoal": self.appleMoveTimeGoal.doubleValue(for: .kilocalorie()),
+      "exerciseTime": self.appleExerciseTime.doubleValue(for: .kilocalorie()),
+      "standHours": self.appleStandHours.doubleValue(for: .kilocalorie()),
+    ]
+
+    if #available(iOS 16.0, *) {
+      activitySummary["exerciseTimeGoal"] = self.exerciseTimeGoal?.doubleValue(for: .second())
+      activitySummary["standHoursGoal"] = self.standHoursGoal?.doubleValue(for: .second())
+    } else {
+      activitySummary["exerciseTimeGoal"] = self.appleExerciseTimeGoal.doubleValue(for: .second())
+      activitySummary["standHoursGoal"] = self.appleStandHoursGoal.doubleValue(for: .second())
+    }
+
+    return activitySummary
   }
 }
 
