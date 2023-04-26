@@ -1,35 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NativeEventEmitter, NativeModules } from 'react-native';
-
-export enum HealthKitSampleCategory {
-    Workout = 'workout',
-}
-
-export interface HealthKitSample {
-    id: string;
-    startDate: string;
-    endDate: string;
-    category?: HealthKitSampleCategory;
-    code?: string;
-    display?: string;
-}
-
-export interface HealthKitWorkout extends HealthKitSample {
-    readonly category: HealthKitSampleCategory.Workout;
-    duration?: number;
-    activeEnergyBurned?: number;
-}
-
-export interface HealthKitActivitySummary {
-    activeEnergyBurned?: number;
-    activeEnergyBurnedGoal?: number;
-    moveTime?: number;
-    moveTimeGoal?: number;
-    exerciesTime?: number;
-    standHours?: number;
-    exerciseTimeGoal?: number;
-    standHoursGoal?: number;
-}
+import { ActivitySummary, Workout } from 'models/activity';
 
 export enum HealthKitQueryStatus {
     Running = 'running',
@@ -39,7 +10,7 @@ export enum HealthKitQueryStatus {
 export type HealthKitEvent<T> = { __internal_code: string; __payload?: { __type: T } };
 
 export const HealthKitEventRegistry = {
-    get SampleCreated(): HealthKitEvent<HealthKitWorkout[]> {
+    get SampleCreated(): HealthKitEvent<Workout[]> {
         return { __internal_code: NativeModules.HealthKitEventChannel.getConstants().HK_SAMPLE_CREATED };
     },
     get QueryStatusHasChanged(): HealthKitEvent<HealthKitQueryStatus> {
@@ -69,8 +40,7 @@ export const HealthKitQueryController = {
 };
 
 export const HealthKitQuery = {
-    activitySummary: (): Promise<HealthKitActivitySummary | undefined> =>
-        NativeModules.HealthKitQuery.activitySummary(),
+    activitySummary: (): Promise<ActivitySummary | undefined> => NativeModules.HealthKitQuery.activitySummary(),
 };
 
 export function useHealthKitQueryStatus() {
@@ -93,16 +63,13 @@ export function useHealthKitQueryStatus() {
     return status;
 }
 
-export function useHealthKitWorkouts(): [HealthKitWorkout[], React.Dispatch<React.SetStateAction<HealthKitWorkout[]>>] {
-    const [workouts, setWorkouts] = useState<HealthKitWorkout[]>([]);
+export function useHealthKitWorkouts(): [Workout[], React.Dispatch<React.SetStateAction<Workout[]>>] {
+    const [workouts, setWorkouts] = useState<Workout[]>([]);
 
     useEffect(() => {
-        const subscription = subscribeHealthKitEvents(
-            HealthKitEventRegistry.SampleCreated,
-            (updates: HealthKitWorkout[]) => {
-                setWorkouts((existingWorkouts) => existingWorkouts.concat(updates));
-            },
-        );
+        const subscription = subscribeHealthKitEvents(HealthKitEventRegistry.SampleCreated, (updates: Workout[]) => {
+            setWorkouts((existingWorkouts) => existingWorkouts.concat(updates));
+        });
 
         return () => subscription.remove();
     }, []);
