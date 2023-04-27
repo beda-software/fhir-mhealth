@@ -8,7 +8,7 @@ import { Workout } from 'models/activity';
 export function attachActivityHistoryDataStream() {
     subscribeHealthKitEvents(HealthKitEventRegistry.SampleCreated, async (workouts: Workout[]) => {
         stateTree.activity.pushWorkouts(workouts);
-        HealthKitQuery.activitySummary().then((summary) => stateTree.activity.updateSummary(summary));
+        HealthKitQuery.activitySummary().then(stateTree.activity.updateSummary);
 
         if (DATASTREAM_API_URL !== undefined) {
             uploadWorkoutHistory(workouts);
