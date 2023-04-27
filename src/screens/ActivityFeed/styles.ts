@@ -71,12 +71,16 @@ export default StyleSheet.create({
         lineHeight: 29,
         fontWeight: '400',
     },
+    sectionFooter: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     signInContainer: {
         paddingTop: 16,
         gap: 8,
         alignItems: 'center',
     },
-    signInDescriptionText: {
+    footnote: {
         ...font.primary,
         fontSize: 13,
         lineHeight: 18,

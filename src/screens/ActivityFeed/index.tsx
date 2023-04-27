@@ -41,6 +41,7 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                     keyExtractor={({ sample }) => sample.id}
                     renderSectionHeader={ActivityFeedSectionHeader}
                     renderItem={ActivityFeedSectionItem}
+                    renderSectionFooter={ActivityFeedSectionFooter}
                     style={s.sectionList}
                     contentContainerStyle={s.sectionListContent}
                     showsVerticalScrollIndicator={false}
@@ -49,14 +50,12 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                     {user.name !== undefined ? (
                         <>
                             <Button onPress={signout} label="Sign out" />
-                            <Text style={s.signInDescriptionText}>Signed in as: {user.name}</Text>
+                            <Text style={s.footnote}>Signed in as: {user.name}</Text>
                         </>
                     ) : (
                         <>
                             <AuthButton />
-                            <Text style={s.signInDescriptionText}>
-                                Unique identifier will be associated with your data
-                            </Text>
+                            <Text style={s.footnote}>Unique identifier will be associated with your data</Text>
                         </>
                     )}
                 </View>
@@ -71,6 +70,14 @@ function ActivityFeedSectionHeader(props: { section: SectionListData<ActivityFee
             <View style={s.sectionHeaderTitle}>
                 <Text style={s.sectionHeaderTitleText}>{props.section.title}</Text>
             </View>
+        </View>
+    );
+}
+
+function ActivityFeedSectionFooter(props: { section: SectionListData<ActivityFeedItem, ActivityFeedSection> }) {
+    return (
+        <View style={s.sectionFooter}>
+            <Text style={s.footnote}>{props.section.summary}</Text>
         </View>
     );
 }

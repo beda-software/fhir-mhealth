@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { Workout } from 'models/activity';
+import { ActivitySummary, Workout } from 'models/activity';
 import { formatDuration } from 'utils/datetime/duration';
 
 export interface Activity {
@@ -23,4 +23,13 @@ export function makeActivitiesCalendar(workouts: readonly Workout[]): Map<string
         activitiesCalendar.set(effectiveDateTime, sameDateActivities);
         return activitiesCalendar;
     }, new Map());
+}
+
+export function describeAcitivitySummary(summary?: ActivitySummary) {
+    const { activeEnergyBurnedGoal, exerciseTimeGoal } = summary ?? {};
+
+    const energyBurnedGoal = activeEnergyBurnedGoal !== undefined ? Math.round(activeEnergyBurnedGoal) : 'N/A';
+    const exerciseGoal = exerciseTimeGoal !== undefined ? Math.round(exerciseTimeGoal / 60) : 'N/A';
+
+    return `Daily Goals: Energy - ${energyBurnedGoal}, Exercise - ${exerciseGoal}`;
 }

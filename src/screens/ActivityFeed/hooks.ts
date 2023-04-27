@@ -3,22 +3,23 @@ import { Alert } from 'react-native';
 
 import { HealthKitQueryController, HealthKitQueryStatus, useHealthKitQueryStatus } from 'services/healthkit';
 
-import { Activity, makeActivitiesCalendar } from './utils';
+import { Activity, describeAcitivitySummary, makeActivitiesCalendar } from './utils';
 import { StateTree } from 'models';
-import { Workout } from 'models/activity';
+import { ActivitySummary, Workout } from 'models/activity';
 
 export type ActivityFeedItem = Activity;
 
 export interface ActivityFeedSection {
     title: string;
     data: ActivityFeedItem[];
+    summary: string;
 }
 
 export function useActivityFeed(activity: StateTree['activity']) {
     const feedStatus = useHealthKitQueryStatus();
 
     return {
-        activities: convertToActivitySections(activity.workouts),
+        activities: convertToActivitySections(activity.workouts, activity.summary),
         isRunning: feedStatus === HealthKitQueryStatus.Running ? true : false,
         start: HealthKitQueryController.start,
         stop: HealthKitQueryController.stop,
@@ -39,10 +40,10 @@ export function useActivityFeed(activity: StateTree['activity']) {
     };
 }
 
-function convertToActivitySections(workouts: readonly Workout[]) {
+function convertToActivitySections(workouts: readonly Workout[], summary?: ActivitySummary) {
     return Array.from(makeActivitiesCalendar(workouts.slice().reverse())).reduce<ActivityFeedSection[]>(
         (sections, [date, oneDayActivities]) => {
-            sections.push({ title: date, data: oneDayActivities });
+            sections.push({ title: date, data: oneDayActivities, summary: describeAcitivitySummary(summary) });
             return sections;
         },
         [],
