@@ -429,8 +429,14 @@ PODS:
     - React-RCTText
   - RNAppleAuthentication (2.2.2):
     - React-Core
+  - RNSentry (5.4.0):
+    - React-Core
+    - Sentry/HybridSDK (= 8.5.0)
   - RNSVG (13.8.0):
     - React-Core
+  - Sentry/HybridSDK (8.5.0):
+    - SentryPrivate (= 8.5.0)
+  - SentryPrivate (8.5.0)
   - SocketRocket (0.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -498,6 +504,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -517,6 +524,8 @@ SPEC REPOS:
     - HMSegmentedControl
     - libevent
     - OpenSSL-Universal
+    - Sentry
+    - SentryPrivate
     - SocketRocket
     - YogaKit
 
@@ -593,6 +602,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-navigation"
   RNAppleAuthentication:
     :path: "../node_modules/@invertase/react-native-apple-authentication"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   Yoga:
@@ -649,7 +660,10 @@ SPEC CHECKSUMS:
   ReactCommon: dbfbe2f7f3c5ce4ce44f43f2fd0d5950d1eb67c5
   ReactNativeNavigation: dc7c08b2e1bd223ab391add511f1ebad4a8a87a5
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
+  RNSentry: 3c8dff994d317f98fc073a9ba85d2d8da3868353
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
+  Sentry: 3be3f42e40e5a552935552e115744d5810a216d9
+  SentryPrivate: 8c9463280e282527f938d1a5d1d60f8e10ff279b
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: d56980c8914db0b51692f55533409e844b66133c
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
