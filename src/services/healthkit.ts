@@ -27,10 +27,10 @@ export function subscribeHealthKitEvents<P = HealthKitEventPayload>(
 }
 
 export const HealthKitQueryController = {
-    start: () => NativeModules.HealthKitQueryController.start(),
-    stop: () => NativeModules.HealthKitQueryController.stop(),
-    reset: () => NativeModules.HealthKitQueryController.reset(),
-    status: (): Promise<ServiceStatus.Running | ServiceStatus.Stopped> =>
+    start: async (): Promise<void> => NativeModules.HealthKitQueryController.start(),
+    stop: async (): Promise<void> => NativeModules.HealthKitQueryController.stop(),
+    reset: async (): Promise<void> => NativeModules.HealthKitQueryController.reset(),
+    status: async (): Promise<ServiceStatus.Running | ServiceStatus.Stopped> =>
         NativeModules.HealthKitQueryController.status(),
 };
 

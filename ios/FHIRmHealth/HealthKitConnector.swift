@@ -116,8 +116,8 @@ class HealthKitConnector: NSObject {
 
   func resetBackgroundQuery() {
     self.stopBackgroundQuery()
-    HealthKitHistory.reset()
     self.queryAnchor = nil
+    HealthKitHistory.reset()
   }
 
   func queryActivitySummary(_ completion: @escaping (HKActivitySummary?) -> Void) throws -> Void {

@@ -27,10 +27,10 @@ export function useActivityFeed(activity: StateTree['activity'], serviceStatus: 
                 {
                     text: 'Reset',
                     style: 'destructive',
-                    onPress: () => {
+                    onPress: async () => {
                         activity.clear();
-                        HealthKitQueryController.reset();
-                        HealthKitQueryController.start();
+                        await HealthKitQueryController.reset();
+                        await HealthKitQueryController.start();
                     },
                 },
                 { text: 'Cancel', style: 'cancel' },
