@@ -1,7 +1,7 @@
 import { appleAuth, AppleRequestResponse } from '@invertase/react-native-apple-authentication';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { useStateTree } from 'models';
+import { stateTree } from 'models';
 import { KeychainStorage } from 'services/storage';
 
 const AUTH_IDENTITY_KEYCHAIN_PATH = 'apple_identity';
@@ -30,37 +30,32 @@ export async function getUserIdentity() {
     return KeychainStorage.retrieve<Authenticated>(AUTH_IDENTITY_KEYCHAIN_PATH);
 }
 
+export async function signout() {
+    stateTree.user.changeName(undefined);
+    KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
+}
+
+export function signin(authenticationDetails: Authenticated) {
+    stateTree.user.changeName(authenticationDetails.username);
+    KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticationDetails);
+}
+
 export function useAuthentication() {
-    const { user } = useStateTree();
-
-    const persistAuthenticationDetails = useCallback(
-        (authenticationDetails: Authenticated) => {
-            user.changeName(authenticationDetails.username);
-            KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticationDetails);
-        },
-        [user],
-    );
-
-    const authenticateWithApple = useCallback(async (): Promise<AuthState> => {
-        const authentication = await signInWithApple();
-        if (authentication.status === AuthStatus.Authenticated) {
-            persistAuthenticationDetails(authentication);
-        }
-        return authentication;
-    }, [persistAuthenticationDetails]);
-
-    const signout = useCallback(() => {
-        user.changeName(undefined);
-        KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
-    }, [user]);
-
     return useMemo(
         () => ({
             authenticate: authenticateWithApple,
             signout,
         }),
-        [authenticateWithApple, signout],
+        [],
     );
+}
+
+async function authenticateWithApple() {
+    const authentication = await signInWithApple();
+    if (authentication.status === AuthStatus.Authenticated) {
+        signin(authentication);
+    }
+    return authentication;
 }
 
 async function signInWithApple(): Promise<Authenticated | NotAuthenticated> {
