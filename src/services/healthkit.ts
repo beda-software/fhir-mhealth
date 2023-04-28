@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 import { ActivitySummary, Workout } from 'models/activity';
 import { ServiceStatus } from 'models/service-status';
@@ -38,19 +37,3 @@ export const HealthKitQueryController = {
 export const HealthKitQuery = {
     activitySummary: (): Promise<ActivitySummary | undefined> => NativeModules.HealthKitQuery.activitySummary(),
 };
-
-export function useHealthKitQueryStatus() {
-    const [status, setStatus] = useState<ServiceStatus>();
-
-    useEffect(() => {
-        HealthKitQueryController.status().then((currentStatus) =>
-            setStatus(currentStatus === ServiceStatus.Running ? ServiceStatus.Running : ServiceStatus.Stopped),
-        );
-
-        const subscription = subscribeHealthKitEvents(HealthKitEventRegistry.QueryStatusHasChanged, setStatus);
-
-        return () => subscription.remove();
-    }, []);
-
-    return status;
-}

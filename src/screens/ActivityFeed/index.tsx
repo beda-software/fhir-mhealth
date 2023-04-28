@@ -14,10 +14,10 @@ import s from './styles';
 export interface ActivityFeedProps {}
 
 export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = observer(function ActivityFeed(_props) {
-    const { user, activity } = useStateTree();
+    const { user, activity, serviceStatus } = useStateTree();
     const { signout } = useAuthentication();
 
-    const { activities, ...controllers } = useActivityFeed(activity);
+    const { activities, ...controllers } = useActivityFeed(activity, serviceStatus);
 
     return (
         <SafeAreaView style={s.safeArea}>
