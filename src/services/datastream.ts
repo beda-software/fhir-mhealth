@@ -1,7 +1,7 @@
 import { DATASTREAM_API_URL } from 'config';
 import { HealthKitEventRegistry, HealthKitQuery, subscribeHealthKitEvents } from 'services/healthkit';
 import { postLocalNotification } from 'services/notifications';
-import { getUserIdentity } from 'services/auth';
+import { getUserIdentity, signout } from 'services/auth';
 import { stateTree } from 'models';
 import { Workout } from 'models/activity';
 
@@ -45,5 +45,15 @@ async function uploadWorkoutHistory(workouts: Workout[]) {
                 energy: r.activeEnergyBurned,
             })),
         }),
+    }).then((response) => {
+        switch (response.status) {
+            case 200:
+                break;
+            case 401:
+                signout();
+                break;
+            default:
+                throw Error(`Failed to submit time series data to ingestion api, operation status: ${response.status}`);
+        }
     });
 }
