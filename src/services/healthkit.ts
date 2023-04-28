@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 import { ActivitySummary, Workout } from 'models/activity';
-
-export enum HealthKitQueryStatus {
-    Running = 'running',
-    Stopped = 'stopped',
-}
+import { ServiceStatus } from 'models/service-status';
 
 export type HealthKitEvent<T> = { __internal_code: string; __payload?: { __type: T } };
 
@@ -13,7 +9,7 @@ export const HealthKitEventRegistry = {
     get SampleCreated(): HealthKitEvent<Workout[]> {
         return { __internal_code: NativeModules.HealthKitEventChannel.getConstants().HK_SAMPLE_CREATED };
     },
-    get QueryStatusHasChanged(): HealthKitEvent<HealthKitQueryStatus> {
+    get QueryStatusHasChanged(): HealthKitEvent<ServiceStatus> {
         return { __internal_code: NativeModules.HealthKitEventChannel.getConstants().HK_QUERY_STATUS_HAS_CHANGED };
     },
 };
@@ -35,7 +31,7 @@ export const HealthKitQueryController = {
     start: () => NativeModules.HealthKitQueryController.start(),
     stop: () => NativeModules.HealthKitQueryController.stop(),
     reset: () => NativeModules.HealthKitQueryController.reset(),
-    status: (): Promise<HealthKitQueryStatus.Running | HealthKitQueryStatus.Stopped> =>
+    status: (): Promise<ServiceStatus.Running | ServiceStatus.Stopped> =>
         NativeModules.HealthKitQueryController.status(),
 };
 
@@ -44,15 +40,11 @@ export const HealthKitQuery = {
 };
 
 export function useHealthKitQueryStatus() {
-    const [status, setStatus] = useState<HealthKitQueryStatus>();
+    const [status, setStatus] = useState<ServiceStatus>();
 
     useEffect(() => {
         HealthKitQueryController.status().then((currentStatus) =>
-            setStatus(
-                currentStatus === HealthKitQueryStatus.Running
-                    ? HealthKitQueryStatus.Running
-                    : HealthKitQueryStatus.Stopped,
-            ),
+            setStatus(currentStatus === ServiceStatus.Running ? ServiceStatus.Running : ServiceStatus.Stopped),
         );
 
         const subscription = subscribeHealthKitEvents(HealthKitEventRegistry.QueryStatusHasChanged, setStatus);

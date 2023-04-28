@@ -19,6 +19,10 @@ export function attachActivityHistoryDataStream() {
             body: `The most recent workouts are: ${workouts.map(({ display }) => display).join(', ')}`,
         });
     });
+    subscribeHealthKitEvents(
+        HealthKitEventRegistry.QueryStatusHasChanged,
+        stateTree.serviceStatus.updateHealthKitServiceStatus,
+    );
 }
 
 async function uploadWorkoutHistory(workouts: Workout[]) {

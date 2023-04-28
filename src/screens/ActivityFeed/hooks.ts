@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 import { Alert } from 'react-native';
 
-import { HealthKitQueryController, HealthKitQueryStatus, useHealthKitQueryStatus } from 'services/healthkit';
+import { HealthKitQueryController, useHealthKitQueryStatus } from 'services/healthkit';
 
 import { Activity, describeAcitivitySummary, makeActivitiesCalendar } from './utils';
 import { StateTree } from 'models';
 import { ActivitySummary, Workout } from 'models/activity';
+import { ServiceStatus } from 'models/service-status';
 
 export type ActivityFeedItem = Activity;
 
@@ -20,7 +21,7 @@ export function useActivityFeed(activity: StateTree['activity']) {
 
     return {
         activities: convertToActivitySections(activity.workouts, activity.summary),
-        isRunning: feedStatus === HealthKitQueryStatus.Running ? true : false,
+        isRunning: feedStatus === ServiceStatus.Running ? true : false,
         start: HealthKitQueryController.start,
         stop: HealthKitQueryController.stop,
         reset: useCallback(() => {
