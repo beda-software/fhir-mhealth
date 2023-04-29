@@ -174,18 +174,18 @@ extension HKActivitySummary {
     var activitySummary = [
       "activeEnergyBurned": self.activeEnergyBurned.doubleValue(for: .kilocalorie()),
       "activeEnergyBurnedGoal": self.activeEnergyBurnedGoal.doubleValue(for: .kilocalorie()),
-      "moveTime": self.appleMoveTime.doubleValue(for: .kilocalorie()),
-      "moveTimeGoal": self.appleMoveTimeGoal.doubleValue(for: .kilocalorie()),
-      "exerciseTime": self.appleExerciseTime.doubleValue(for: .kilocalorie()),
-      "standHours": self.appleStandHours.doubleValue(for: .kilocalorie()),
+      "moveTime": self.appleMoveTime.doubleValue(for: .second()),
+      "moveTimeGoal": self.appleMoveTimeGoal.doubleValue(for: .second()),
+      "exerciseTime": self.appleExerciseTime.doubleValue(for: .second()),
+      "standHours": self.appleStandHours.doubleValue(for: .count()),
     ]
 
     if #available(iOS 16.0, *) {
       activitySummary["exerciseTimeGoal"] = self.exerciseTimeGoal?.doubleValue(for: .second())
-      activitySummary["standHoursGoal"] = self.standHoursGoal?.doubleValue(for: .second())
+      activitySummary["standHoursGoal"] = self.standHoursGoal?.doubleValue(for: .count())
     } else {
       activitySummary["exerciseTimeGoal"] = self.appleExerciseTimeGoal.doubleValue(for: .second())
-      activitySummary["standHoursGoal"] = self.appleStandHoursGoal.doubleValue(for: .second())
+      activitySummary["standHoursGoal"] = self.appleStandHoursGoal.doubleValue(for: .count())
     }
 
     return activitySummary
