@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 import { stateTree } from 'models';
 import { KeychainStorage } from 'services/storage';
+import { signinEMRPatient } from 'services/emr';
 
 const AUTH_IDENTITY_KEYCHAIN_PATH = 'apple_identity';
 
@@ -31,13 +32,20 @@ export async function getUserIdentity() {
 }
 
 export async function signout() {
-    stateTree.user.changeName(undefined);
+    stateTree.user.switchPatient(undefined);
     KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
 }
 
-export function signin(authenticationDetails: Authenticated) {
-    stateTree.user.changeName(formatAppleFullName(authenticationDetails.username));
-    KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticationDetails);
+export async function signin(authenticated: Authenticated) {
+    stateTree.user.switchPatient(
+        await signinEMRPatient(authenticated.jwt, {
+            name: {
+                given: authenticated.username?.givenName ?? undefined,
+                family: authenticated.username?.familyName ?? undefined,
+            },
+        }),
+    );
+    KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticated);
 }
 
 export function useAuthentication() {
@@ -80,10 +88,4 @@ async function signInWithApple(): Promise<Authenticated | NotAuthenticated> {
         }
         throw error;
     }
-}
-
-function formatAppleFullName(fullName: AppleRequestResponse['fullName']): string {
-    return [fullName?.namePrefix, fullName?.givenName, fullName?.middleName, fullName?.familyName]
-        .filter((component): component is string => component !== undefined)
-        .join(' ');
 }
