@@ -18,7 +18,7 @@ export interface AuthState {
 export interface Authenticated extends AuthState {
     readonly status: AuthStatus.Authenticated;
     uid: string;
-    username: string;
+    username: AppleRequestResponse['fullName'];
     jwt: string;
 }
 
@@ -36,7 +36,7 @@ export async function signout() {
 }
 
 export function signin(authenticationDetails: Authenticated) {
-    stateTree.user.changeName(authenticationDetails.username);
+    stateTree.user.changeName(formatAppleFullName(authenticationDetails.username));
     KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticationDetails);
 }
 
@@ -68,7 +68,7 @@ async function signInWithApple(): Promise<Authenticated | NotAuthenticated> {
             return {
                 status: AuthStatus.Authenticated,
                 uid: response.user,
-                username: formatAppleFullName(response.fullName),
+                username: response.fullName,
                 jwt: response.identityToken!,
             };
         } else {
