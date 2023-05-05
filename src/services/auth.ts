@@ -18,9 +18,12 @@ export interface AuthState {
 
 export interface Authenticated extends AuthState {
     readonly status: AuthStatus.Authenticated;
+    jwt: string;
+}
+
+interface AuthenticatedAppleResponse extends Authenticated {
     uid: string;
     username: AppleRequestResponse['fullName'];
-    jwt: string;
 }
 
 export interface NotAuthenticated extends AuthState {
@@ -36,16 +39,18 @@ export async function signout() {
     KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
 }
 
-export async function signin(authenticated: Authenticated) {
+export async function signin(authenticated: AuthenticatedAppleResponse) {
+    const { username, ...authenticatedIdentity } = authenticated;
+
     stateTree.user.switchPatient(
         await signinEMRPatient(authenticated.jwt, {
             name: {
-                given: authenticated.username?.givenName ?? undefined,
-                family: authenticated.username?.familyName ?? undefined,
+                given: username?.givenName ?? undefined,
+                family: username?.familyName ?? undefined,
             },
         }),
     );
-    KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticated);
+    KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticatedIdentity);
 }
 
 export function useAuthentication() {
@@ -66,7 +71,7 @@ async function authenticateWithApple() {
     return authentication;
 }
 
-async function signInWithApple(): Promise<Authenticated | NotAuthenticated> {
+async function signInWithApple(): Promise<AuthenticatedAppleResponse | NotAuthenticated> {
     try {
         const response = await appleAuth.performRequest({
             requestedOperation: appleAuth.Operation.LOGIN,
