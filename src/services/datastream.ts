@@ -70,7 +70,7 @@ function checkResponseStatus({ from: service }: { from: string }) {
                 signout();
                 break;
             default:
-                throw Error(`"${service}" service request has Failed, operation status: ${response.status}`);
+                throw Error(`"${service}" service request has failed, operation status: ${response.status}`);
         }
     };
 }
