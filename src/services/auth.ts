@@ -35,22 +35,25 @@ export async function getUserIdentity() {
 }
 
 export async function signout() {
+    await KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
     stateTree.user.switchPatient(undefined);
-    KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
 }
 
 export async function signin(authenticated: AuthenticatedAppleResponse) {
-    const { username, ...authenticatedIdentity } = authenticated;
+    const identity: Authenticated = { status: AuthStatus.Authenticated, jwt: authenticated.jwt };
+    if (await KeychainStorage.retrieve<Authenticated>(AUTH_IDENTITY_KEYCHAIN_PATH)) {
+        await KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
+    }
+    await KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, identity);
 
     stateTree.user.switchPatient(
         await signinEMRPatient(authenticated.jwt, {
             name: {
-                given: username?.givenName ?? undefined,
-                family: username?.familyName ?? undefined,
+                given: authenticated.username?.givenName ?? undefined,
+                family: authenticated.username?.familyName ?? undefined,
             },
         }),
     );
-    KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, authenticatedIdentity);
 }
 
 export function useAuthentication() {
