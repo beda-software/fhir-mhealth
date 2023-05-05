@@ -13,7 +13,7 @@ export function makeActivitiesCalendar(workouts: readonly Workout[]): Map<string
         const startDate = DateTime.fromISO(workout.startDate);
         const endDate = DateTime.fromISO(workout.endDate);
         const duration = endDate.diff(startDate, ['hours', 'minutes']);
-        const effectiveDateTime = startDate.toFormat('ccc dd LLL');
+        const effectiveDateTime = startDate.toFormat('ccc d LLL');
 
         let sameDateActivities = activitiesCalendar.get(effectiveDateTime) ?? [];
         sameDateActivities.push({
