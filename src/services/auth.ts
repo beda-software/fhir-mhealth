@@ -1,5 +1,4 @@
 import { appleAuth, AppleRequestResponse } from '@invertase/react-native-apple-authentication';
-import { useMemo } from 'react';
 
 import { stateTree } from 'models';
 import { KeychainStorage } from 'services/storage';
@@ -56,25 +55,15 @@ export async function signin(authenticated: AuthenticatedAppleResponse) {
     );
 }
 
-export function useAuthentication() {
-    return useMemo(
-        () => ({
-            authenticate: authenticateWithApple,
-            signout,
-        }),
-        [],
-    );
-}
-
-async function authenticateWithApple() {
-    const authentication = await signInWithApple();
+export async function signinWithApple() {
+    const authentication = await openAppleAuthenticationDialog();
     if (authentication.status === AuthStatus.Authenticated) {
         signin(authentication);
     }
     return authentication;
 }
 
-async function signInWithApple(): Promise<AuthenticatedAppleResponse | NotAuthenticated> {
+async function openAppleAuthenticationDialog(): Promise<AuthenticatedAppleResponse | NotAuthenticated> {
     try {
         const response = await appleAuth.performRequest({
             requestedOperation: appleAuth.Operation.LOGIN,

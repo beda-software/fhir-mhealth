@@ -4,7 +4,7 @@ import { SafeAreaView, StatusBar, Text, View, SectionList, SectionListData } fro
 import { NavigationComponentProps } from 'react-native-navigation';
 
 import { useStateTree } from 'models';
-import { useAuthentication } from 'services/auth';
+import { signout } from 'services/auth';
 import { AuthButton } from 'components/AuthButton';
 import { Button } from 'components/Button';
 
@@ -15,7 +15,6 @@ export interface ActivityFeedProps {}
 
 export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = observer(function ActivityFeed(_props) {
     const { user, activity, serviceStatus } = useStateTree();
-    const { signout } = useAuthentication();
 
     const { activities, ...controllers } = useActivityFeed(activity, serviceStatus);
 
