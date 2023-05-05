@@ -1,20 +1,33 @@
 import { DATASTREAM_API_URL } from 'config';
+import { stateTree } from 'models';
+import { Workout } from 'models/activity';
 import { HealthKitEventRegistry, HealthKitQuery, subscribeHealthKitEvents } from 'services/healthkit';
 import { postLocalNotification } from 'services/notifications';
 import { getUserIdentity, signout } from 'services/auth';
-import { stateTree } from 'models';
-import { Workout } from 'models/activity';
+import { uploadActivitySummaryObservation } from 'services/emr';
 
 export function attachActivityHistoryDataStream() {
     HealthKitQuery.activitySummary().then(stateTree.activity.updateSummary);
 
     subscribeHealthKitEvents(HealthKitEventRegistry.SampleCreated, async (workouts: Workout[]) => {
-        stateTree.activity.pushWorkouts(workouts);
-        HealthKitQuery.activitySummary().then(stateTree.activity.updateSummary);
+        const identity = await getUserIdentity();
 
         if (DATASTREAM_API_URL !== undefined) {
-            uploadWorkoutHistory(workouts);
+            uploadWorkoutHistory(identity?.jwt, workouts).then(
+                checkResponseStatus({ from: 'Time Series Data Stream' }),
+            );
         }
+        stateTree.activity.pushWorkouts(workouts);
+
+        HealthKitQuery.activitySummary().then((summary) => {
+            if (identity && stateTree.user.patient && summary) {
+                // EMR requires patient to be authenticated to submit observations
+                uploadActivitySummaryObservation(identity.jwt, stateTree.user.patient, summary).then(
+                    checkResponseStatus({ from: 'EMR' }),
+                );
+            }
+            stateTree.activity.updateSummary(summary);
+        });
 
         postLocalNotification({
             title: 'New Workout',
@@ -27,14 +40,12 @@ export function attachActivityHistoryDataStream() {
     );
 }
 
-async function uploadWorkoutHistory(workouts: Workout[]) {
-    const identity = await getUserIdentity();
-
+async function uploadWorkoutHistory(token: string | undefined, workouts: Workout[]) {
     return fetch(DATASTREAM_API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            ...(identity ? { Authorization: `Bearer ${identity.jwt}` } : undefined),
+            ...(token ? { Authorization: `Bearer ${token}` } : undefined),
         },
         body: JSON.stringify({
             records: workouts.map((r) => ({
@@ -47,7 +58,11 @@ async function uploadWorkoutHistory(workouts: Workout[]) {
                 energy: r.activeEnergyBurned,
             })),
         }),
-    }).then((response) => {
+    });
+}
+
+function checkResponseStatus({ from: service }: { from: string }) {
+    return (response: Response) => {
         switch (response.status) {
             case 200:
                 break;
@@ -55,7 +70,7 @@ async function uploadWorkoutHistory(workouts: Workout[]) {
                 signout();
                 break;
             default:
-                throw Error(`Failed to submit time series data to ingestion api, operation status: ${response.status}`);
+                throw Error(`"${service}" service request has Failed, operation status: ${response.status}`);
         }
-    });
+    };
 }

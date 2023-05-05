@@ -7,7 +7,7 @@ const ActivitySummaryModel = types.model('ActivitySummaryModel').props({
     activeEnergyBurnedGoal: types.maybe(types.number),
     moveTime: types.maybe(types.number),
     moveTimeGoal: types.maybe(types.number),
-    exerciesTime: types.maybe(types.number),
+    exerciseTime: types.maybe(types.number),
     standHours: types.maybe(types.number),
     exerciseTimeGoal: types.maybe(types.number),
     standHoursGoal: types.maybe(types.number),

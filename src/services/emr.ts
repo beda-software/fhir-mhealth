@@ -1,7 +1,9 @@
+import { DateTime } from 'luxon';
 import decodeJwt, { JwtPayload } from 'jwt-decode';
 import { Patient, QuestionnaireResponse } from 'fhir/r4b';
 
 import { FHIRAPI } from 'services/fhir';
+import { ActivitySummary } from 'models/activity';
 
 interface EMRUser {
     role: Array<{ name: string; links: { patient?: { id: string } } }>;
@@ -68,4 +70,52 @@ async function fetchEMRPatient(token: string): Promise<Patient> {
     }
 
     return patientResponse.json() as Promise<Patient>;
+}
+
+export async function uploadActivitySummaryObservation(token: string, patient: Patient, summary: ActivitySummary) {
+    return FHIRAPI(token).post('/Questionnaire/activity-summary/$extract', {
+        body: {
+            resourceType: 'Parameters',
+            parameter: [
+                {
+                    name: 'questionnaire_response',
+                    resource: {
+                        resourceType: 'QuestionnaireResponse',
+                        questionnaire: 'activity-summary',
+                        subject: { reference: `Patient/${patient.id}` },
+                        item: [
+                            {
+                                linkId: 'effective',
+                                answer: [{ valueDate: DateTime.now().toISODate() }],
+                            },
+                            {
+                                linkId: 'active-energy-burned-goal',
+                                answer: [{ valueQuantity: { value: summary.activeEnergyBurnedGoal } }],
+                            },
+                            {
+                                linkId: 'active-energy-burned',
+                                answer: [{ valueQuantity: { value: summary.activeEnergyBurned } }],
+                            },
+                            {
+                                linkId: 'stand-hours-goal',
+                                answer: [{ valueQuantity: { value: summary.standHoursGoal } }],
+                            },
+                            {
+                                linkId: 'stand-hours',
+                                answer: [{ valueQuantity: { value: summary.standHours } }],
+                            },
+                            {
+                                linkId: 'exercise-time-goal',
+                                answer: [{ valueQuantity: { value: summary.exerciseTimeGoal } }],
+                            },
+                            {
+                                linkId: 'exercise-time',
+                                answer: [{ valueQuantity: { value: summary.exerciseTime } }],
+                            },
+                        ],
+                    } as QuestionnaireResponse,
+                },
+            ],
+        },
+    });
 }
