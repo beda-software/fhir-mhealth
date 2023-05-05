@@ -47,10 +47,10 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                     showsVerticalScrollIndicator={false}
                 />
                 <View style={s.signInContainer}>
-                    {user.name !== undefined ? (
+                    {user.patient !== undefined ? (
                         <>
                             <Button onPress={signout} label="Sign out" />
-                            <Text style={s.footnote}>Signed in as: {user.name}</Text>
+                            <Text style={s.footnote}>Signed in as: {user.name ?? 'N/A'}</Text>
                         </>
                     ) : (
                         <>
