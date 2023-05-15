@@ -37,15 +37,15 @@ enum HealthKitEvent {
 
 @objc(HealthKitEventChannel)
 class HealthKitEventChannel: RCTEventEmitter {
-  func notify(of event: HealthKitEvent) {
-    var update: Any?
+  func notify(of event: HealthKitEvent, in transaction: String?) {
+    var update: [String: Any?] = ["transaction": transaction]
     switch event {
     case .samplesCreated(let created):
-      update = created.map({$0.summary})
+      update["event"] = created.map({$0.summary})
     case .objectsRemoved(let removed):
-      update = removed.map({["id": $0.uuid.uuidString]})
+      update["event"] = removed.map({["id": $0.uuid.uuidString]})
     case .queryStatusHasChanged(let status):
-      update = status.rawValue
+      update["event"] = status.rawValue
     }
     self.sendEvent(withName: event.code, body: update)
   }

@@ -18,4 +18,8 @@ class HealthKitQueryController: NSObject {
   @objc func status(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
     resolve(HealthKitConnector.shared.queryStatus.rawValue)
   }
+
+  @objc func commit(_ transaction: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+    resolve(HealthKitConnector.shared.commitQueryTransaction(transaction))
+  }
 }

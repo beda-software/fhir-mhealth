@@ -21,9 +21,15 @@ const HealthKitEventChannel = new NativeEventEmitter(NativeModules.HealthKitEven
 
 export function subscribeHealthKitEvents<P = HealthKitEventPayload>(
     event: HealthKitEvent<P>,
-    handler: (eventPayload: P) => void,
+    handler: (eventPayload: P) => Promise<void>,
 ) {
-    return HealthKitEventChannel.addListener(event.__internal_code, handler);
+    return HealthKitEventChannel.addListener(event.__internal_code, ({ transaction, event: payload }) =>
+        handler(payload).then(async () => {
+            if (transaction !== undefined) {
+                await HealthKitQueryController.commit(transaction);
+            }
+        }),
+    );
 }
 
 export const HealthKitQueryController = {
@@ -32,6 +38,7 @@ export const HealthKitQueryController = {
     reset: async (): Promise<void> => NativeModules.HealthKitQueryController.reset(),
     status: async (): Promise<ServiceStatus.Running | ServiceStatus.Stopped> =>
         NativeModules.HealthKitQueryController.status(),
+    commit: async (transaction: string): Promise<void> => NativeModules.HealthKitQueryController.commit(transaction),
 };
 
 export const HealthKitQuery = {

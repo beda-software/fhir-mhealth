@@ -12,10 +12,7 @@ fileprivate class HealthKitHistory {
 
   static func checkpoint(at anchor: HKQueryAnchor) {
     do {
-      UserDefaults.standard.set(
-        try NSKeyedArchiver.archivedData(withRootObject: anchor, requiringSecureCoding: true).base64EncodedString(),
-        forKey: PersistanceKeys.historyAnchor
-      )
+      UserDefaults.standard.set(try anchor.serialise(), forKey: PersistanceKeys.historyAnchor)
     } catch {
       logger.error("Failed to archive HKQueryAnchor: \(error)")
     }
@@ -23,15 +20,26 @@ fileprivate class HealthKitHistory {
 
   static func restore() -> HKQueryAnchor? {
     if let encodedArchive = UserDefaults.standard.string(forKey: PersistanceKeys.historyAnchor) {
-      if let archive = Data(base64Encoded: encodedArchive) {
-        return try? NSKeyedUnarchiver.unarchivedObject(ofClass: HKQueryAnchor.self, from: archive)
-      }
+      return try? HKQueryAnchor.deserialise(from: encodedArchive)
     }
     return nil
   }
 
   static func reset() {
     UserDefaults.standard.removeObject(forKey: PersistanceKeys.historyAnchor)
+  }
+}
+
+extension HKQueryAnchor {
+  func serialise() throws -> String {
+    return try NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: true).base64EncodedString()
+  }
+
+  static func deserialise(from encoded: String) throws -> HKQueryAnchor? {
+    if let archive = Data(base64Encoded: encoded) {
+      return try NSKeyedUnarchiver.unarchivedObject(ofClass: HKQueryAnchor.self, from: archive)
+    }
+    return nil
   }
 }
 
@@ -46,7 +54,7 @@ class HealthKitConnector: NSObject {
   private var runningQuery: HKAnchoredObjectQuery? = nil
   private var queryAnchor: HKQueryAnchor? = HealthKitHistory.restore()
   private var eventChannels: [HealthKitEventChannel] = []
-  private var eventDeliveryQueue: [HealthKitEvent] = []
+  private var eventDeliveryQueue: [(HealthKitEvent, String?)] = []
 
   static let shared = HealthKitConnector()
 
@@ -66,7 +74,9 @@ class HealthKitConnector: NSObject {
 
   func connectEventChannel(_ channelMediator: HealthKitEventChannel) {
     self.eventChannels.append(channelMediator)
-    self.eventDeliveryQueue.forEach({channelMediator.notify(of: $0)})
+    for (event, transaction) in self.eventDeliveryQueue {
+      channelMediator.notify(of: event, in: transaction)
+    }
   }
 
   func disconnectEventChannel(_ channelMediator: HealthKitEventChannel) {
@@ -120,6 +130,12 @@ class HealthKitConnector: NSObject {
     HealthKitHistory.reset()
   }
 
+  func commitQueryTransaction(_ transaction: String) {
+    if let anchor = try? HKQueryAnchor.deserialise(from: transaction) {
+      HealthKitHistory.checkpoint(at: anchor)
+    }
+  }
+
   func queryActivitySummary(_ completion: @escaping (HKActivitySummary?) -> Void) throws -> Void {
     guard HKHealthStore.isHealthDataAvailable() else {
       throw HealthKitConnectorError.notAvailable
@@ -147,24 +163,24 @@ class HealthKitConnector: NSObject {
     }
 
     if let samples = samplesCreated, !samples.isEmpty {
-      distribute(event: .samplesCreated(samples))
+      distribute(event: .samplesCreated(samples), at: historyPointAnchor)
     }
 
     if let objects = objectsRemoved, !objects.isEmpty {
-      distribute(event: .objectsRemoved(objects))
+      distribute(event: .objectsRemoved(objects), at: historyPointAnchor)
     }
 
     if let anchor = historyPointAnchor {
-      HealthKitHistory.checkpoint(at: anchor)
       self.queryAnchor = anchor
     }
   }
 
-  private func distribute(event: HealthKitEvent) {
+  private func distribute(event: HealthKitEvent, at anchor: HKQueryAnchor? = nil) {
+    let transaction = try? anchor?.serialise()
     if self.eventChannels.isEmpty {
-      self.eventDeliveryQueue.append(event)
+      self.eventDeliveryQueue.append((event, transaction))
     } else {
-      self.eventChannels.forEach({$0.notify(of: event)})
+      self.eventChannels.forEach({$0.notify(of: event, in: transaction)})
     }
   }
 }

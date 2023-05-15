@@ -1,6 +1,7 @@
 import { DATASTREAM_API_URL } from 'config';
 import { stateTree } from 'models';
 import { Workout } from 'models/activity';
+import { ServiceStatus } from 'models/service-status';
 import { HealthKitEventRegistry, HealthKitQuery, subscribeHealthKitEvents } from 'services/healthkit';
 import { postLocalNotification } from 'services/notifications';
 import { getUserIdentity, signout } from 'services/auth';
@@ -13,16 +14,16 @@ export function attachActivityHistoryDataStream() {
         const identity = await getUserIdentity();
 
         if (DATASTREAM_API_URL !== undefined) {
-            uploadWorkoutHistory(identity?.jwt, workouts).then(
+            await uploadWorkoutHistory(identity?.jwt, workouts).then(
                 checkResponseStatus({ from: 'Time Series Data Stream' }),
             );
         }
         stateTree.activity.pushWorkouts(workouts);
 
-        HealthKitQuery.activitySummary().then((summary) => {
+        await HealthKitQuery.activitySummary().then(async (summary) => {
             if (identity && stateTree.user.patient && summary) {
                 // EMR requires patient to be authenticated to submit observations
-                uploadActivitySummaryObservation(identity.jwt, stateTree.user.patient, summary).then(
+                await uploadActivitySummaryObservation(identity.jwt, stateTree.user.patient, summary).then(
                     checkResponseStatus({ from: 'EMR' }),
                 );
             }
@@ -34,10 +35,9 @@ export function attachActivityHistoryDataStream() {
             body: `The most recent workouts are: ${workouts.map(({ display }) => display).join(', ')}`,
         });
     });
-    subscribeHealthKitEvents(
-        HealthKitEventRegistry.QueryStatusHasChanged,
-        stateTree.serviceStatus.updateHealthKitServiceStatus,
-    );
+    subscribeHealthKitEvents(HealthKitEventRegistry.QueryStatusHasChanged, async (status: ServiceStatus) => {
+        stateTree.serviceStatus.updateHealthKitServiceStatus(status);
+    });
 }
 
 async function uploadWorkoutHistory(token: string | undefined, workouts: Workout[]) {
