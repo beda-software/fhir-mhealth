@@ -28,12 +28,14 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                         <Text style={s.title}>Activity</Text>
                     </View>
                     <View style={s.headerControls}>
-                        <Button
-                            icon={'plus'}
-                            onPress={() => {
-                                setMetriportModalVisible((currentValue) => !currentValue);
-                            }}
-                        />
+                        {metriport.connectToken ? (
+                            <Button
+                                icon={'plus'}
+                                onPress={() => {
+                                    setMetriportModalVisible((currentValue) => !currentValue);
+                                }}
+                            />
+                        ) : null}
                         {controllers.isRunning ? (
                             <Button icon={'stop'} onPress={controllers.stop} />
                         ) : (
