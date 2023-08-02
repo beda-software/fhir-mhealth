@@ -5,6 +5,7 @@
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 #import <RNNotifications.h>
 
+#import "MetriportConfiguration.h"
 
 @implementation AppDelegate
 
