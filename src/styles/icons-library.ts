@@ -2,6 +2,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faStop } from '@fortawesome/free-solid-svg-icons/faStop';
 import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons/faRotateRight';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 
 /**
  * There are two options to refer to an SVG icon: explicit import and library build-up.
@@ -11,5 +12,5 @@ import { faRotateRight } from '@fortawesome/free-solid-svg-icons/faRotateRight';
  * For more details see: https://fontawesome.com/docs/web/use-with/react-native#_2-build-a-library
  */
 export function preloadIconsLibraryRegistry() {
-    library.add(faStop, faPlay, faRotateRight);
+    library.add(faStop, faPlay, faRotateRight, faPlus);
 }

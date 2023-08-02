@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
-import { SafeAreaView, StatusBar, Text, View, SectionList, SectionListData } from 'react-native';
+import { SafeAreaView, StatusBar, Text, View, SectionList, SectionListData, Modal } from 'react-native';
 import { NavigationComponentProps } from 'react-native-navigation';
 
 import { useStateTree } from 'models';
@@ -8,15 +8,16 @@ import { signout } from 'services/auth';
 import { AuthButton } from 'components/AuthButton';
 import { Button } from 'components/Button';
 
-import { ActivityFeedItem, ActivityFeedSection, useActivityFeed } from './hooks';
+import { ActivityFeedItem, ActivityFeedSection, useActivityFeed, useMetriportWidget } from './hooks';
 import s from './styles';
+import { MetriportWidget } from '@metriport/react-native-sdk';
 
 export interface ActivityFeedProps {}
 
 export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = observer(function ActivityFeed(_props) {
-    const { user, activity, serviceStatus } = useStateTree();
-
+    const { user, activity, serviceStatus, metriport } = useStateTree();
     const { activities, ...controllers } = useActivityFeed(activity, serviceStatus);
+    const { metriportModalVisible, setMetriportModalVisible } = useMetriportWidget(user.patient?.id);
 
     return (
         <SafeAreaView style={s.safeArea}>
@@ -27,6 +28,12 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                         <Text style={s.title}>Activity</Text>
                     </View>
                     <View style={s.headerControls}>
+                        <Button
+                            icon={'plus'}
+                            onPress={() => {
+                                setMetriportModalVisible((currentValue) => !currentValue);
+                            }}
+                        />
                         {controllers.isRunning ? (
                             <Button icon={'stop'} onPress={controllers.stop} />
                         ) : (
@@ -58,6 +65,26 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                         </>
                     )}
                 </View>
+                {metriport.connectToken && metriportModalVisible ? (
+                    <View>
+                        <Modal animationType="slide">
+                            <View style={s.metriportModalContainer}>
+                                <MetriportWidget
+                                    sandbox={true}
+                                    clientApiKey="ODhVZ0JWcXlmakJYMDZqZWNwNHdYOmY5Y2RhYzA2LWIxMzItNGNmNC05MzIwLTAzMmE1MzVmZmY5MQ"
+                                    token={metriport.connectToken}
+                                    style={s.metriportWidgetBox}
+                                />
+                                <Button
+                                    onPress={() => {
+                                        setMetriportModalVisible(false);
+                                    }}
+                                    label="Close"
+                                />
+                            </View>
+                        </Modal>
+                    </View>
+                ) : null}
             </View>
         </SafeAreaView>
     );
