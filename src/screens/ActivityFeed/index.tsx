@@ -18,7 +18,7 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
     const { user, activity, serviceStatus, metriport } = useStateTree();
     const { activities, ...controllers } = useActivityFeed(activity, serviceStatus);
     const { metriportModalVisible, setMetriportModalVisible } = useMetriportWidget(user.patient?.id);
-
+    const appleUserId = user.patient?.identifier?.find((i) => i.system === 'https://appleid.apple.com')?.value;
     return (
         <SafeAreaView style={s.safeArea}>
             <View style={s.container}>
@@ -28,11 +28,11 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                         <Text style={s.title}>Activity</Text>
                     </View>
                     <View style={s.headerControls}>
-                        {metriport.connectToken ? (
+                        {appleUserId ? (
                             <Button
                                 icon={'plus'}
                                 onPress={() => {
-                                    setMetriportModalVisible((currentValue) => !currentValue);
+                                    setMetriportModalVisible(true);
                                 }}
                             />
                         ) : null}
@@ -67,14 +67,14 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                         </>
                     )}
                 </View>
-                {metriport.connectToken && metriportModalVisible ? (
+                {metriportModalVisible ? (
                     <View>
                         <Modal animationType="slide">
                             <View style={s.metriportModalContainer}>
                                 <MetriportWidget
                                     sandbox={true}
                                     clientApiKey="ODhVZ0JWcXlmakJYMDZqZWNwNHdYOmY5Y2RhYzA2LWIxMzItNGNmNC05MzIwLTAzMmE1MzVmZmY5MQ"
-                                    token={metriport.connectToken}
+                                    token={metriport.connectToken ?? 'invalid-token'}
                                     style={s.metriportWidgetBox}
                                 />
                                 <Button
