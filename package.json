@@ -15,7 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-native-fontawesome": "^0.3.0",
     "@invertase/react-native-apple-authentication": "^2.2.2",
-    "@metriport/react-native-sdk": "^1.1.1",
+    "@metriport/react-native-sdk": "^1.0.5",
     "@sentry/react-native": "^5.4.0",
     "jwt-decode": "^3.1.2",
     "luxon": "^3.3.0",
