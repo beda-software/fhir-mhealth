@@ -17,8 +17,8 @@ export interface ActivityFeedProps {}
 export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = observer(function ActivityFeed(_props) {
     const { user, activity, serviceStatus, metriport } = useStateTree();
     const { activities, ...controllers } = useActivityFeed(activity, serviceStatus);
-    const { metriportModalVisible, setMetriportModalVisible } = useMetriportWidget(user.patient?.id);
     const appleUserId = user.patient?.identifier?.find((i) => i.system === 'https://appleid.apple.com')?.value;
+    const { metriportModalVisible, setMetriportModalVisible } = useMetriportWidget(appleUserId);
     return (
         <SafeAreaView style={s.safeArea}>
             <View style={s.container}>
