@@ -88,7 +88,7 @@ export default StyleSheet.create({
         textAlign: 'center',
     },
     metriportModalContainer: {
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         alignItems: 'center',
         padding: 5,
     },
@@ -96,5 +96,4 @@ export default StyleSheet.create({
         width: '100%',
         height: '90%',
     },
-    metriportModalButton: {},
 });
