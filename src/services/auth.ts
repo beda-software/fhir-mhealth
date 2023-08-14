@@ -69,6 +69,7 @@ async function openAppleAuthenticationDialog(): Promise<AuthenticatedAppleRespon
             requestedOperation: appleAuth.Operation.LOGIN,
             requestedScopes: [appleAuth.Scope.FULL_NAME],
         });
+
         if ((await appleAuth.getCredentialStateForUser(response.user)) === appleAuth.State.AUTHORIZED) {
             return {
                 status: AuthStatus.Authenticated,

@@ -1,12 +1,14 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import { HealthKitQueryController } from 'services/healthkit';
 
 import { Activity, describeAcitivitySummary, makeActivitiesCalendar } from './utils';
-import { StateTree } from 'models';
+import { StateTree, stateTree } from 'models';
 import { ActivitySummary, Workout } from 'models/activity';
 import { ServiceStatus } from 'models/service-status';
+import { getUserIdentity } from 'services/auth';
+import { fetchMetriportConnectToken } from 'services/metriport';
 
 export type ActivityFeedItem = Activity;
 
@@ -47,4 +49,36 @@ function convertToActivitySections(workouts: readonly Workout[], summary?: Activ
         },
         [],
     );
+}
+
+interface ConnectTokenResponseData {
+    token: string;
+}
+
+export function useMetriportWidget(userId?: string) {
+    const [metriportModalVisible, setMetriportModalVisible] = useState(false);
+
+    const getConnectToken = useCallback(async () => {
+        if (userId) {
+            const userIdentity = await getUserIdentity();
+            try {
+                if (userIdentity?.jwt) {
+                    const response = await fetchMetriportConnectToken(userIdentity.jwt, userId);
+
+                    if (response.status === 200) {
+                        const result: ConnectTokenResponseData = await response.json();
+                        stateTree.metriport.updateMetriportConnectToken(result.token);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }, [userId]);
+
+    useEffect(() => {
+        getConnectToken();
+    }, [getConnectToken]);
+
+    return { metriportModalVisible, setMetriportModalVisible };
 }

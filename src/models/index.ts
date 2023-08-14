@@ -5,6 +5,7 @@ import { PersistentStorage } from 'services/storage';
 import { UserModel } from 'models/user';
 import { ActivityModel } from 'models/activity';
 import { ServiceStatusModel } from 'models/service-status';
+import { MetriportModel } from './metriport';
 
 const PERSISTENCE_KEY = 'statetree.snapshot';
 
@@ -17,6 +18,7 @@ const StateTreeModel = types.model('StateTreeModel').props({
             return {};
         },
     }),
+    metriport: types.optional(MetriportModel, {}),
 });
 
 export interface StateTree extends Instance<typeof StateTreeModel> {}

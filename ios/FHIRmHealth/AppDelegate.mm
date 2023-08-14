@@ -5,11 +5,14 @@
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 #import <RNNotifications.h>
 
+#import "MetriportConfiguration.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [MetriportConfiguration checkBackgroundUpdates];
+  
   self.moduleName = @"FHIRmHealth";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

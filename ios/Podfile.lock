@@ -78,6 +78,10 @@ PODS:
   - hermes-engine/Pre-built (0.71.7)
   - HMSegmentedControl (1.5.6)
   - libevent (2.1.12)
+  - metriport-react-native (1.0.5):
+    - MetriportSDK
+    - React-Core
+  - MetriportSDK (1.0.26)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -332,6 +336,8 @@ PODS:
     - glog
   - react-native-notifications (4.3.3):
     - React-Core
+  - react-native-webview (13.3.0):
+    - React-Core
   - React-perflogger (0.71.7)
   - React-RCTActionSheet (0.71.7):
     - React-Core/RCTActionSheetHeaders (= 0.71.7)
@@ -471,6 +477,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
+  - "metriport-react-native (from `../node_modules/@metriport/react-native-sdk`)"
   - OpenSSL-Universal (= 1.1.1100)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -489,6 +496,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-notifications (from `../node_modules/react-native-notifications`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -523,6 +531,7 @@ SPEC REPOS:
     - fmt
     - HMSegmentedControl
     - libevent
+    - MetriportSDK
     - OpenSSL-Universal
     - Sentry
     - SentryPrivate
@@ -542,6 +551,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
+  metriport-react-native:
+    :path: "../node_modules/@metriport/react-native-sdk"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -572,6 +583,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -629,6 +642,8 @@ SPEC CHECKSUMS:
   hermes-engine: 4438d2b8bf8bebaba1b1ac0451160bab59e491f8
   HMSegmentedControl: 34c1f54d822d8308e7b24f5d901ec674dfa31352
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  metriport-react-native: f01bc6616699b44e8473edb91d388c07ce0ebac8
+  MetriportSDK: 4b998ac557e058643bf24b68cf221a42f8f4926d
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 5a4a30ac20c86eeadd6844a9328f78d4168cf9b2
@@ -645,6 +660,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 9885f6f94d231b95a739ef7bb50536fb87ce7539
   React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
   react-native-notifications: 83b4fd4a127a6c918fc846cae90da60f84819e44
+  react-native-webview: 8a4f68a75fc7efaedfdeba6d5aa2db4a4f74f281
   React-perflogger: 2d505bbe298e3b7bacdd9e542b15535be07220f6
   React-RCTActionSheet: 0e96e4560bd733c9b37efbf68f5b1a47615892fb
   React-RCTAnimation: fd138e26f120371c87e406745a27535e2c8a04ef
@@ -668,6 +684,6 @@ SPEC CHECKSUMS:
   Yoga: d56980c8914db0b51692f55533409e844b66133c
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 5fb9a6967f67cfdf412aa13034bd91c650310cf2
+PODFILE CHECKSUM: bbf8aeae8108fddeba2843015bf226d147cdb2f4
 
 COCOAPODS: 1.12.0
