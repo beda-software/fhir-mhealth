@@ -27,7 +27,8 @@
     "react-native-navigation": "^7.32.0",
     "react-native-notifications": "^4.3.3",
     "react-native-svg": "^13.8.0",
-    "react-native-webview": "^13.3.0"
+    "react-native-webview": "^13.3.0",
+    "fhir-react": "https://github.com/beda-software/fhir-react.git"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
