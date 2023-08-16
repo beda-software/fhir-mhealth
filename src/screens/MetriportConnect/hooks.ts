@@ -1,18 +1,17 @@
 import { useStateTree } from 'models';
 import { getUserIdentity } from 'services/auth';
 import { fetchMetriportConnectToken } from 'services/metriport';
-import { useService } from 'fhir-react/lib/hooks/service';
-import { failure } from 'fhir-react/lib/libs/remoteData';
+import { useService } from 'fhir-react/src/hooks/service';
+import { failure } from 'fhir-react/src/libs/remoteData';
 
 export interface MetriportConnectProps {}
 
-export function useMetriportWidget() {
+export function useMetriportConnect() {
     const { user } = useStateTree();
     const userId = user.appleUserId;
     const [response] = useService(async () => {
         if (userId) {
             const userIdentity = await getUserIdentity();
-            console.log('userIdentity', userIdentity);
             if (userIdentity?.jwt) {
                 return await fetchMetriportConnectToken(userIdentity.jwt, userId);
             } else {
@@ -21,7 +20,7 @@ export function useMetriportWidget() {
         } else {
             return failure('Please log in with Apple ID');
         }
-    }, [userId]);
+    });
 
     return { response };
 }

@@ -1,12 +1,16 @@
 import { DATASTREAM_METRIPORT_URL } from 'config';
+import { service } from 'fhir-react/lib/services/service';
+
+interface ConnectTokenResponseData {
+    token: string;
+}
 
 export async function fetchMetriportConnectToken(token: string, userId: string) {
-    return fetch(`${DATASTREAM_METRIPORT_URL}/connect-token`, {
+    return service<ConnectTokenResponseData>({
+        baseURL: DATASTREAM_METRIPORT_URL,
+        url: '/connect-token',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ userId }),
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        data: { userId },
     });
 }
