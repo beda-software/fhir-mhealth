@@ -11,7 +11,7 @@ export function pushToMetriportScreen(parentComponentId: string, passProps: Metr
         component: {
             name: metriportConnectComponentName,
             options: {
-                topBar: { title: { text: 'Metriport connect' } },
+                topBar: { title: { text: 'Metriport connect' }, visible: true, backButton: { displayMode: 'generic' } },
             },
             passProps,
         },
