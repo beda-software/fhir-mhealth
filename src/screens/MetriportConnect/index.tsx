@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ActivityIndicator, SafeAreaView, Text } from 'react-native';
+import { ActivityIndicator, SafeAreaView, Text, View } from 'react-native';
 import { MetriportWidget } from '@metriport/react-native-sdk';
 import { METRIPORT_CLIENT_KEY } from 'config';
 import s from './styles';
@@ -12,13 +12,20 @@ export const MetriportConnect: FC<MetriportConnectProps & NavigationComponentPro
     function MetriportConnect(_props) {
         const { response } = useMetriportConnect();
 
+        const renderFailure = (error: any) => (
+            <View style={s.container}>
+                <Text style={s.failureText}>{error}</Text>
+            </View>
+        );
+        const renderLoading = () => (
+            <View style={s.container}>
+                <ActivityIndicator />
+            </View>
+        );
+
         return (
             <SafeAreaView style={s.safeArea}>
-                <RenderRemoteData
-                    remoteData={response}
-                    renderLoading={() => <ActivityIndicator />}
-                    renderFailure={(e) => <Text>{e}</Text>}
-                >
+                <RenderRemoteData remoteData={response} renderLoading={renderLoading} renderFailure={renderFailure}>
                     {({ token }) => (
                         <MetriportWidget
                             sandbox={true}
