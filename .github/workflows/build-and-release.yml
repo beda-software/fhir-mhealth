@@ -34,7 +34,7 @@ jobs:
             ./vendor/
             ./ios/Pods/
       - name: Install project dependencies
-        run: yarn install && bundle install && cd ios && bundle exec pod install --repo-update
+        run: yarn install --network-concurrency 1 && bundle install && cd ios && bundle exec pod install --repo-update
       - name: Build and release
         run: bundle exec fastlane ios staging
         env:
