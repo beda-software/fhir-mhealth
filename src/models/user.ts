@@ -9,6 +9,9 @@ export const UserModel = types
         get name() {
             return self.patient?.name?.[0] ? formatHumanName(self.patient.name[0]) : undefined;
         },
+        get appleUserId() {
+            return self.patient?.identifier?.find((i) => i.system === 'https://appleid.apple.com')?.value;
+        },
     }))
     .actions((self) => ({
         switchPatient: (patient?: Patient) => (self.patient = patient),
