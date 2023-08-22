@@ -4,13 +4,20 @@ import { Patient, QuestionnaireResponse } from 'fhir/r4b';
 
 import { FHIRAPI } from 'services/fhir';
 import { ActivitySummary } from 'models/activity';
+import { isFailure } from 'fhir-react/src/libs/remoteData';
 
 interface EMRUser {
     role: Array<{ name: string; links: { patient?: { id: string } } }>;
 }
 
 export async function signinEMRPatient(token: string, user: { name: { given?: string; family?: string } }) {
-    return signupEMRPatientOnce(token, user).then(() => fetchEMRPatient(token));
+    const signupEMRPatientOnceResponse = await signupEMRPatientOnce(token, user)
+
+    if (isFailure(signupEMRPatientOnceResponse)) {
+        return signupEMRPatientOnceResponse;
+    }
+
+    return await fetchEMRPatient(token);
 }
 
 async function signupEMRPatientOnce(token: string, user: { name: { given?: string; family?: string } }) {
@@ -50,26 +57,23 @@ async function signupEMRPatientOnce(token: string, user: { name: { given?: strin
     });
 }
 
-async function fetchEMRPatient(token: string): Promise<Patient> {
+async function fetchEMRPatient(token: string) {
     const client = FHIRAPI(token);
 
     const userinfoResponse = await client.get('/auth/userinfo');
-    if (userinfoResponse.status !== 200) {
-        return Promise.reject(`Unable to fetch user roles: ${userinfoResponse.status}`);
+    if (isFailure(userinfoResponse)) {
+        return userinfoResponse;
     }
 
-    const userinfo = (await userinfoResponse.json()) as EMRUser;
+    const userinfo = userinfoResponse.data as EMRUser;
     const patientRole = userinfo.role.find((r) => r.name === 'patient');
     if (patientRole?.links.patient === undefined) {
         return Promise.reject("User doesn't have a Patient role assigned");
     }
 
     const patientResponse = await client.get(`/fhir/Patient/${patientRole.links.patient.id}`);
-    if (patientResponse.status !== 200) {
-        return Promise.reject(`Unable to fetch patient resource: ${patientResponse.status}`);
-    }
 
-    return patientResponse.json() as Promise<Patient>;
+    return patientResponse;
 }
 
 export async function uploadActivitySummaryObservation(token: string, patient: Patient, summary: ActivitySummary) {
