@@ -30,7 +30,7 @@ export async function updatePatientIdentifier(args: UpdatePatientIdentifierArgs)
     if (metriportIdentifier) {
         return success(patient);
     }
-    return FHIRAPI(token).patch('/Questionnaire/federated-identity-signin/$extract', {
+    return FHIRAPI(token).patch('/Patient', {
         body: {
             id: patient.id,
             identifier: [

@@ -19,7 +19,7 @@ export const FHIRAPI = (token: string) => ({
             body: JSON.stringify(body),
         }),
     patch: async (path: string, { body }: { body: Record<string, any> }) =>
-        service<Patient>(`${FHIR_API_URL}/${path}`, {
+        service(`${FHIR_API_URL}/${path}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
