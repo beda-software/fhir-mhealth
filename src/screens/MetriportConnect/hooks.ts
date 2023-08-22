@@ -14,7 +14,7 @@ export function useMetriportConnect() {
         if (userId && user.patient) {
             const userIdentity = await getUserIdentity();
             if (userIdentity?.jwt) {
-                const metriportTokenResponse = await fetchMetriportConnectToken(userIdentity.jwt, userId);
+                const metriportTokenResponse = await fetchMetriportConnectToken(userIdentity.jwt);
 
                 if (isSuccess(metriportTokenResponse)) {
                     const patientUpdateResponse = await updatePatientIdentifier({

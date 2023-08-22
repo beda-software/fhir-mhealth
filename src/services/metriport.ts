@@ -8,13 +8,12 @@ interface ConnectTokenResponseData {
     metriportUserId: string;
 }
 
-export async function fetchMetriportConnectToken(token: string, userId: string) {
+export async function fetchMetriportConnectToken(token: string) {
     return service<ConnectTokenResponseData>({
         baseURL: DATASTREAM_METRIPORT_URL,
         url: '/connect-token',
-        method: 'POST',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        data: { userId },
     });
 }
 
