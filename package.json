@@ -17,6 +17,7 @@
     "@invertase/react-native-apple-authentication": "^2.2.2",
     "@metriport/react-native-sdk": "^1.1.1",
     "@sentry/react-native": "^5.4.0",
+    "fhir-react": "https://github.com/beda-software/fhir-react.git",
     "jwt-decode": "^3.1.2",
     "luxon": "^3.3.0",
     "mobx": "^6.8.0",
@@ -27,8 +28,7 @@
     "react-native-navigation": "^7.32.0",
     "react-native-notifications": "^4.3.3",
     "react-native-svg": "^13.8.0",
-    "react-native-webview": "^13.3.0",
-    "fhir-react": "https://github.com/beda-software/fhir-react.git"
+    "react-native-webview": "^13.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
