@@ -6,8 +6,6 @@ import { HealthKitEventRegistry, HealthKitQuery, subscribeHealthKitEvents } from
 import { postLocalNotification } from 'services/notifications';
 import { getUserIdentity, signout } from 'services/auth';
 import { uploadActivitySummaryObservation } from 'services/emr';
-import { isFailure } from 'fhir-react/src/libs/remoteData';
-import { formatError } from 'fhir-react/src/utils/error';
 
 export function attachActivityHistoryDataStream() {
     HealthKitQuery.activitySummary().then(stateTree.activity.updateSummary);
@@ -25,15 +23,9 @@ export function attachActivityHistoryDataStream() {
         await HealthKitQuery.activitySummary().then(async (summary) => {
             if (identity && stateTree.user.patient && summary) {
                 // EMR requires patient to be authenticated to submit observations
-                const uploadObservationResponse = await uploadActivitySummaryObservation(
-                    identity.jwt,
-                    stateTree.user.patient,
-                    summary,
+                await uploadActivitySummaryObservation(identity.jwt, stateTree.user.patient, summary).then(
+                    checkResponseStatus({ from: 'EMR' }),
                 );
-
-                if (isFailure(uploadObservationResponse)) {
-                    throw Error(formatError(uploadObservationResponse.error));
-                }
             }
             stateTree.activity.updateSummary(summary);
         });
