@@ -3,6 +3,7 @@ import { appleAuth, AppleRequestResponse } from '@invertase/react-native-apple-a
 import { stateTree } from 'models';
 import { KeychainStorage } from 'services/storage';
 import { signinEMRPatient } from 'services/emr';
+import { mapFailure, mapSuccess } from 'fhir-react/src/services/service';
 
 const AUTH_IDENTITY_KEYCHAIN_PATH = 'apple_identity';
 
@@ -45,13 +46,14 @@ export async function signin(authenticated: AuthenticatedAppleResponse) {
     }
     await KeychainStorage.store(AUTH_IDENTITY_KEYCHAIN_PATH, identity);
 
-    stateTree.user.switchPatient(
+    mapSuccess(
         await signinEMRPatient(authenticated.jwt, {
             name: {
                 given: authenticated.username?.givenName ?? undefined,
                 family: authenticated.username?.familyName ?? undefined,
             },
         }),
+        (patient) => stateTree.user.switchPatient(patient),
     );
 }
 
