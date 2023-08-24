@@ -3609,7 +3609,7 @@ fb-watchman@^2.0.0:
 
 "fhir-react@https://github.com/beda-software/fhir-react.git":
   version "1.7.0"
-  resolved "https://github.com/beda-software/fhir-react.git#d8d7e9f1b7e0193d03883b5406481f8b469a9a9a"
+  resolved "https://github.com/beda-software/fhir-react.git#618a666cfb321903ef899f03a7cf50a5187f1a0e"
   dependencies:
     axios "^0.21.2"
     moment "^2.29.1"
