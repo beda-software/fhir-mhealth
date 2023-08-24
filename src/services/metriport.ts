@@ -30,7 +30,7 @@ export async function updatePatientIdentifier(args: UpdatePatientIdentifierArgs)
     if (metriportIdentifier) {
         return success(patient);
     }
-    return FHIRAPI(token).patch('/Patient', {
+    return FHIRAPI(token).patch(`/Patient/${patient.id}`, {
         body: {
             id: patient.id,
             identifier: [
