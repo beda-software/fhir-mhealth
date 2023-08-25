@@ -6,6 +6,8 @@ import { HealthKitEventRegistry, HealthKitQuery, subscribeHealthKitEvents } from
 import { postLocalNotification } from 'services/notifications';
 import { getUserIdentity, signout } from 'services/auth';
 import { uploadActivitySummaryObservation } from 'services/emr';
+import { isFailure } from 'fhir-react/src/libs/remoteData';
+import { FetchError, service as fetchService } from 'fhir-react/src/services/fetch';
 
 export function attachActivityHistoryDataStream() {
     HealthKitQuery.activitySummary().then(stateTree.activity.updateSummary);
@@ -14,18 +16,28 @@ export function attachActivityHistoryDataStream() {
         const identity = await getUserIdentity();
 
         if (DATASTREAM_API_URL !== undefined) {
-            await uploadWorkoutHistory(identity?.jwt, workouts).then(
-                checkResponseStatus({ from: 'Time Series Data Stream' }),
-            );
+            const uploadWorkoutHistoryResponse = await uploadWorkoutHistory(identity?.jwt, workouts);
+            if (isFailure(uploadWorkoutHistoryResponse)) {
+                checkResponseStatus({
+                    from: 'Time Series Data Stream',
+                    error: uploadWorkoutHistoryResponse.error,
+                });
+            }
         }
         stateTree.activity.pushWorkouts(workouts);
 
         await HealthKitQuery.activitySummary().then(async (summary) => {
             if (identity && stateTree.user.patient && summary) {
                 // EMR requires patient to be authenticated to submit observations
-                await uploadActivitySummaryObservation(identity.jwt, stateTree.user.patient, summary).then(
-                    checkResponseStatus({ from: 'EMR' }),
+                const uploadObservationsResponse = await uploadActivitySummaryObservation(
+                    identity.jwt,
+                    stateTree.user.patient,
+                    summary,
                 );
+
+                if (isFailure(uploadObservationsResponse)) {
+                    checkResponseStatus({ from: 'EMR', error: uploadObservationsResponse.error });
+                }
             }
             stateTree.activity.updateSummary(summary);
         });
@@ -41,7 +53,7 @@ export function attachActivityHistoryDataStream() {
 }
 
 async function uploadWorkoutHistory(token: string | undefined, workouts: Workout[]) {
-    return fetch(DATASTREAM_API_URL, {
+    return fetchService(DATASTREAM_API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -61,16 +73,22 @@ async function uploadWorkoutHistory(token: string | undefined, workouts: Workout
     });
 }
 
-function checkResponseStatus({ from: service }: { from: string }) {
-    return (response: Response) => {
-        switch (response.status) {
-            case 200:
-                break;
-            case 401:
-                signout();
-                break;
-            default:
-                throw Error(`"${service}" service request has failed, operation status: ${response.status}`);
-        }
-    };
+interface CheckResponseStatusArgs {
+    from: string;
+    error: FetchError;
+}
+
+function checkResponseStatus(args: CheckResponseStatusArgs) {
+    const { from: service, error } = args;
+    switch (error.status) {
+        case 200:
+            break;
+        case 401:
+            signout();
+            break;
+        default:
+            throw Error(
+                `"${service}" service request has failed, operation status: ${error.status}, details: ${error.message}`,
+            );
+    }
 }
