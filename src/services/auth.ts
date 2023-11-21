@@ -4,6 +4,9 @@ import { stateTree } from 'models';
 import { KeychainStorage } from 'services/storage';
 import { signinEMRPatient } from 'services/emr';
 import { isSuccess } from 'fhir-react/src/libs/remoteData';
+import { Navigation } from 'react-native-navigation';
+import { mainRoot } from 'screens/navigation';
+import { loginRoot } from 'screens/Login/navigation';
 
 const AUTH_IDENTITY_KEYCHAIN_PATH = 'apple_identity';
 
@@ -37,6 +40,7 @@ export async function getUserIdentity() {
 export async function signout() {
     await KeychainStorage.remove(AUTH_IDENTITY_KEYCHAIN_PATH);
     stateTree.user.switchPatient(undefined);
+    Navigation.setRoot(loginRoot);
 }
 
 export async function signin(authenticated: AuthenticatedAppleResponse) {
@@ -56,10 +60,12 @@ export async function signin(authenticated: AuthenticatedAppleResponse) {
 
 export async function signinWithApple() {
     const authentication = await openAppleAuthenticationDialog();
+
     if (authentication.status === AuthStatus.Authenticated) {
         const response = await signin(authentication);
         if (isSuccess(response)) {
             stateTree.user.switchPatient(response.data);
+            Navigation.setRoot(mainRoot);
         }
     }
     return authentication;
