@@ -60,12 +60,12 @@ async function signupEMRPatientOnce(token: string, user: { name: { given?: strin
 async function fetchEMRPatient(token: string): Promise<RemoteDataResult<Patient, FetchError>> {
     const client = FHIRAPI(token);
 
-    const userinfoResponse = await client.get('/auth/userinfo');
+    const userinfoResponse = await client.get<EMRUser>('/auth/userinfo');
     if (isFailure(userinfoResponse)) {
         return userinfoResponse;
     }
 
-    const userinfo = userinfoResponse.data as EMRUser;
+    const userinfo = userinfoResponse.data;
     const patientRole = userinfo.role.find((r) => r.name === 'patient');
     if (patientRole?.links.patient === undefined) {
         return failure<FetchError>({ message: "User doesn't have a Patient role assigned" });
