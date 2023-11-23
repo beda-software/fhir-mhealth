@@ -51,7 +51,8 @@ enum HealthKitConnectorError: Error {
 @objc
 class HealthKitConnector: NSObject {
   private let store = HKHealthStore()
-  private var runningQuery: HKAnchoredObjectQuery? = nil
+  private var runningQuery: HKObserverQuery? = nil
+  private var observerQueryCompletionHandler: HKObserverQueryCompletionHandler? = nil
   private var queryAnchor: HKQueryAnchor? = HealthKitHistory.restore()
   private var eventChannels: [HealthKitEventChannel] = []
   private var eventDeliveryQueue: [(HealthKitEvent, String?)] = []
@@ -96,22 +97,33 @@ class HealthKitConnector: NSObject {
       let timeLimitPredicate = HKQuery.predicateForSamples(
         withStart: Calendar.current.date(byAdding: .day, value: -7, to: .now), end: nil, options: []
       )
-      let anchoredQuery = HKAnchoredObjectQuery(type: HKQuantityType.workoutType(),
-                                                predicate: timeLimitPredicate,
-                                                anchor: self.queryAnchor,
-                                                limit: HKObjectQueryNoLimit) {_, created, removed, anchor, error in
-        self.storeUpdateHandler(created, removed, anchor, error)
+      let query = HKObserverQuery(sampleType: HKQuantityType.workoutType(),
+                                  predicate: timeLimitPredicate) { (query, completionHandler, errorOrNil) in
+        if let error = errorOrNil {
+          logger.error("Observer query has failed with error: \(error)")
+          completionHandler()
+          return
+        }
+        let anchoredQuery = HKAnchoredObjectQuery(type: HKQuantityType.workoutType(),
+                                                  predicate: timeLimitPredicate,
+                                                  anchor: self.queryAnchor,
+                                                  limit: HKObjectQueryNoLimit) {_, created, removed, anchor, error in
+          self.storeUpdateHandler(created, removed, anchor, error)
+        }
+        anchoredQuery.updateHandler = {_, created, removed, anchor, error in
+          self.storeUpdateHandler(created, removed, anchor, error)
+        }
+        self.store.execute(anchoredQuery)
+        self.observerQueryCompletionHandler = completionHandler
       }
-      anchoredQuery.updateHandler = {_, created, removed, anchor, error in
-        self.storeUpdateHandler(created, removed, anchor, error)
-      }
-      self.store.execute(anchoredQuery)
+      self.store.execute(query)
+      self.runningQuery = query
       self.store.enableBackgroundDelivery(for: HKQuantityType.workoutType(), frequency: .immediate) {_,error in
         if error != nil {
           logger.error("Failed to enabled background updates delivery: \(error)")
         }
       }
-      self.runningQuery = anchoredQuery
+
       self.distribute(event: .queryStatusHasChanged(.running))
     }
   }
@@ -133,6 +145,10 @@ class HealthKitConnector: NSObject {
   func commitQueryTransaction(_ transaction: String) {
     if let anchor = try? HKQueryAnchor.deserialise(from: transaction) {
       HealthKitHistory.checkpoint(at: anchor)
+    }
+
+    if let observerQueryCompletionHandler = self.observerQueryCompletionHandler {
+      observerQueryCompletionHandler()
     }
   }
 
