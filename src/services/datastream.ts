@@ -66,8 +66,8 @@ async function uploadWorkoutHistory(token: string | undefined, workouts: Workout
                 start: r.startDate,
                 finish: r.endDate,
                 code: r.code,
-                duration: r.duration,
-                energy: r.activeEnergyBurned,
+                duration: r.duration ? Math.round(r.duration) : undefined,
+                energy: r.activeEnergyBurned ? Math.round(r.activeEnergyBurned) : undefined,
             })),
         }),
     });
