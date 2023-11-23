@@ -5,7 +5,6 @@ import { NavigationComponentProps } from 'react-native-navigation';
 
 import { useStateTree } from 'models';
 import { signout } from 'services/auth';
-import { AuthButton } from 'components/AuthButton';
 import { Button } from 'components/Button';
 
 import { ActivityFeedItem, ActivityFeedSection, useActivityFeed } from './hooks';
