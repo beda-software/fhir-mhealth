@@ -1,4 +1,4 @@
-import { DATASTREAM_METRIPORT_URL, METRIPORT_IDENTIFIER_SYSTEM } from 'config';
+import { DATASTREAM_METRIPORT_URL, METRIPORT_IDENTIFIER_SYSTEM_URL } from 'config';
 import { service } from 'fhir-react/lib/services/service';
 import { Patient } from 'fhir/r4b';
 import { success } from 'fhir-react/src/libs/remoteData';
@@ -26,7 +26,7 @@ interface UpdatePatientIdentifierArgs {
 
 export async function updatePatientIdentifier(args: UpdatePatientIdentifierArgs) {
     const { patient, token } = args;
-    const metriportIdentifier = patient.identifier?.find((i) => i.system === METRIPORT_IDENTIFIER_SYSTEM);
+    const metriportIdentifier = patient.identifier?.find((i) => i.system === METRIPORT_IDENTIFIER_SYSTEM_URL);
     if (metriportIdentifier) {
         return success(patient);
     }
@@ -35,7 +35,7 @@ export async function updatePatientIdentifier(args: UpdatePatientIdentifierArgs)
             id: patient.id,
             identifier: [
                 ...(patient.identifier ?? []),
-                { system: METRIPORT_IDENTIFIER_SYSTEM, value: args.metriportUserId },
+                { system: METRIPORT_IDENTIFIER_SYSTEM_URL, value: args.metriportUserId },
             ],
         },
     });
