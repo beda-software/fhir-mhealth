@@ -50,6 +50,10 @@ export const ActivityModel = types
     .actions((self) => ({
         pushWorkouts: (workouts: Workout[]) => {
             for (const workout of workouts) {
+                const existingWorkout = self.workouts.find((w) => w.id === workout.id);
+                if (existingWorkout) {
+                    continue;
+                }
                 self.workouts.push(workout);
                 if (self.workouts.length > WORKOUTS_HISTORY_TO_KEEP) {
                     self.workouts.shift();
