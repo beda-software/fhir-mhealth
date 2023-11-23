@@ -47,17 +47,8 @@ export const ActivityFeed: FC<ActivityFeedProps & NavigationComponentProps> = ob
                     showsVerticalScrollIndicator={false}
                 />
                 <View style={s.signInContainer}>
-                    {user.patient !== undefined ? (
-                        <>
-                            <Button onPress={signout} label="Sign out" />
-                            <Text style={s.footnote}>Signed in as: {user.name ?? 'N/A'}</Text>
-                        </>
-                    ) : (
-                        <>
-                            <AuthButton />
-                            <Text style={s.footnote}>Unique identifier will be associated with your data</Text>
-                        </>
-                    )}
+                    <Button onPress={signout} label="Sign out" />
+                    <Text style={s.footnote}>Signed in as: {user.name ?? 'N/A'}</Text>
                 </View>
             </View>
         </SafeAreaView>
