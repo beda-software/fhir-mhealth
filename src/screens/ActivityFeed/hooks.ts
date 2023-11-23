@@ -7,6 +7,9 @@ import { Activity, describeAcitivitySummary, makeActivitiesCalendar } from './ut
 import { StateTree } from 'models';
 import { ActivitySummary, Workout } from 'models/activity';
 import { ServiceStatus } from 'models/service-status';
+import { useService } from 'fhir-react/src/hooks/service';
+import { getUserIdentity } from 'services/auth';
+import { uploadWorkoutHistory } from 'services/datastream';
 
 export type ActivityFeedItem = Activity;
 
@@ -17,6 +20,13 @@ export interface ActivityFeedSection {
 }
 
 export function useActivityFeed(activity: StateTree['activity'], serviceStatus: StateTree['serviceStatus']) {
+    useService(async () => {
+        const identity = await getUserIdentity();
+        const uploadWorkoutsResponse = await uploadWorkoutHistory(identity?.jwt, activity.workouts);
+
+        return uploadWorkoutsResponse;
+    }, []);
+
     return {
         activities: convertToActivitySections(activity.workouts, activity.summary),
         isRunning: serviceStatus.healthkit === ServiceStatus.Running ? true : false,

@@ -52,7 +52,7 @@ export function attachActivityHistoryDataStream() {
     });
 }
 
-async function uploadWorkoutHistory(token: string | undefined, workouts: Workout[]) {
+export async function uploadWorkoutHistory(token: string | undefined, workouts: Workout[]) {
     return fetchService(DATASTREAM_API_URL, {
         method: 'POST',
         headers: {
