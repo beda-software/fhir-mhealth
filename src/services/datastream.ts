@@ -53,7 +53,7 @@ export function attachActivityHistoryDataStream() {
 }
 
 export async function uploadWorkoutHistory(token: string | undefined, workouts: Workout[]) {
-    return fetchService(DATASTREAM_API_URL, {
+    return fetchService(`${DATASTREAM_API_URL}/records`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
