@@ -16,6 +16,7 @@ export async function signinEMRPatient(token: string, user: { name: { given?: st
     if (isSuccess(response)) {
         return await fetchEMRPatient(token);
     } else {
+        console.error('signinEMRPatient response errpr', response.error);
         return response;
     }
 }
