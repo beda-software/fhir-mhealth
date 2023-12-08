@@ -10,7 +10,7 @@ export const UserModel = types
             return self.patient?.name?.[0] ? formatHumanName(self.patient.name[0]) : undefined;
         },
         get appleUserId() {
-            return self.patient?.identifier?.find((i) => i.system === 'https://appleid.apple.com')?.value;
+            return self.patient?.identifier?.find((i) => i.system === 'https://ingest.emr.beda.software')?.value;
         },
     }))
     .actions((self) => ({
