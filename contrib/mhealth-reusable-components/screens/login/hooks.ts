@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import config from '@beda.software/emr-config';
 import * as AuthSession from 'expo-auth-session';
 import Constants from 'expo-constants';
 
 import { setAuthToken } from '@/services/auth';
 
-import * as config from '@/config';
 import { useSession } from '@/context/auth/hooks';
 
 export function useLoginScreen() {
@@ -14,10 +14,10 @@ export function useLoginScreen() {
     const redirectUri = AuthSession.makeRedirectUri({ scheme: appScheme, path: 'login' });
     const [obtainTokenError, setTokenError] = useState<string | undefined>(undefined);
 
-    const discovery = AuthSession.useAutoDiscovery(config.OAUTH_BASE_URL);
+    const discovery = AuthSession.useAutoDiscovery(config.baseURL);
     const [request, result, onSignIn] = AuthSession.useAuthRequest(
         {
-            clientId: config.OAUTH_CLIENT_ID,
+            clientId: config.clientId,
             redirectUri,
             scopes: ['profile'],
         },
@@ -27,7 +27,8 @@ export function useLoginScreen() {
     useEffect(() => {
         if (request && discovery && result?.type === 'success') {
             const authCode = result.params.code;
-            const tokenURL = discovery.tokenEndpoint ?? config.OAUTH_TOKEN_ENDPOINT;
+            const defaultTokenUrl = `${config.baseURL}/auth/token`;
+            const tokenURL = discovery.tokenEndpoint ?? defaultTokenUrl;
 
             try {
                 setAuthToken({
