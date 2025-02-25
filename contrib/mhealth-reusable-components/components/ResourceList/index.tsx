@@ -47,48 +47,62 @@ export function ResourceList<R extends Resource>({
     const initialTableColumns = getTableColumns({ reload });
 
     return (
-        <View
-            style={{ flex: 1 }}
-        >
-            <RenderRemoteData remoteData={recordResponse}>
+        <View>
+            {columnsFilterValues.map(f => {
+                return (
+                    <TextInput
+                        key={f.column.id}
+                        value={f.value as string}
+                        onChangeText={(text) => onChangeColumnFilter(text, f.column.id)}
+                        placeholder={f.column.placeholder.toString()}
+                        style={{
+                            backgroundColor: '#F3F4F5',
+                            width: 220,
+                            height: 50,
+                            borderColor: 'black',
+                            borderRadius: 25,
+                            borderWidth: 1,
+                            marginTop: 10,
+                            padding: 11,
+                        }}
+                    />
+                );
+            })}
+            <RenderRemoteData
+                remoteData={recordResponse}
+                renderFailure={(error) => <Text>{JSON.stringify(error, undefined, 4)}</Text>}
+                renderLoading={() => <Text>Loading</Text>}
+            >
                 {(records) => {
                     return (
                         <FlatList
-                            style={{ paddingTop: 20 }}
                             ListHeaderComponent={
-                                <View>
-                                    {columnsFilterValues.map(f => {
-                                        return (
-                                            <TextInput
-                                                key={f.column.id}
-                                                value={f.value as string}
-                                                onChangeText={(text) => onChangeColumnFilter(text, f.column.id)}
-                                                placeholder={f.column.placeholder.toString()}
-                                                style={{
-                                                    width: 220,
-                                                    height: 50,
-                                                    borderColor: 'black',
-                                                    borderRadius: 25,
-                                                    borderWidth: 1,
-                                                    marginTop: 10,
-                                                    padding: 11,
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                    <View
-                                        style={{ flexDirection: 'row', flex: 1 }}
-                                    >
-                                        {initialTableColumns.map(column =>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        flex: 1,
+                                        height: 48,
+                                        marginTop: 20,
+                                    }}
+                                >
+                                    {initialTableColumns.map((column, index) =>
+                                        <View
+                                            key={column.key}
+                                            style={{
+                                                flex: 1,
+                                                backgroundColor: '#E9ECEF',
+                                                justifyContent: 'center',
+                                                ...(index === 0 ? { borderTopLeftRadius: 16 } : {}),
+                                                ...(index === (initialTableColumns.length - 1) ? { borderTopRightRadius: 16 } : {}),
+                                            }}
+                                        >
                                             <Text
-                                                key={column.key}
-                                                style={{ flex: 1 }}
-
+                                                style={{ paddingLeft: 16 }}
                                             >
                                                 {column.title}
                                             </Text>
-                                        )}
-                                    </View>
+                                        </View>
+                                    )}
                                 </View>
                             }
                             data={records}
@@ -96,12 +110,21 @@ export function ResourceList<R extends Resource>({
                                 <View key={item.resource.id} style={{ flexDirection: 'row', height: 48, flex: 1 }}>
                                     {initialTableColumns.map(column => {
                                         return (
-                                            <Text
+                                            <View
                                                 key={column.key}
-                                                style={{ flex: 1 }}
+                                                style={{
+                                                    flex: 1,
+                                                    backgroundColor: '#F3F4F5',
+                                                    justifyContent: 'center'
+                                                }}
+
                                             >
-                                                {column.render(undefined, item)}
-                                            </Text>
+                                                <Text
+                                                    style={{ paddingLeft: 16 }}
+                                                >
+                                                    {column.render(undefined, item)}
+                                                </Text>
+                                            </View>
                                         );
                                     })}
                                 </View>
