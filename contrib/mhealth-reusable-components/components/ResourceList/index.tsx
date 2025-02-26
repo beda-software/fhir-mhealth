@@ -11,7 +11,7 @@ import { RecordType } from 'src/components/Table/utils';
 interface Column<R extends Resource>{
     title: string,
     key: string,
-    render: (record: RecordType<R>) => string,
+    render: (record: RecordType<R>) => React.ReactElement | string,
     width: number,
 }
 
@@ -108,6 +108,8 @@ export function ResourceList<R extends Resource>({
                             renderItem={({ item }) => (
                                 <View key={item.resource.id} style={{ flexDirection: 'row', height: 48, flex: 1 }}>
                                     {initialTableColumns.map(column => {
+                                        const value = column.render(item);
+                                        const component = typeof value === 'string' ? <Text>{value}</Text> : value
                                         return (
                                             <View
                                                 key={column.key}
@@ -118,11 +120,11 @@ export function ResourceList<R extends Resource>({
                                                 }}
 
                                             >
-                                                <Text
+                                                <View
                                                     style={{ paddingLeft: 16 }}
                                                 >
-                                                    {column.render(item)}
-                                                </Text>
+                                                    {component}
+                                                </View>
                                             </View>
                                         );
                                     })}
