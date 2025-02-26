@@ -5,14 +5,13 @@ import { Resource } from 'fhir/r4b';
 import { View, Text, FlatList, TextInput } from 'react-native';
 import { useSearchBar } from 'src/components/SearchBar/hooks';
 import { useResourceListPage } from 'src/uberComponents/ResourceListPage/hooks';
-import { ResourceListPageProps } from 'src/uberComponents/ResourceListPage';
+import { ResourceListProps as GenaralResourceListProps } from 'src/uberComponents/ResourceListPage/types';
 import { RecordType } from 'src/components/Table/utils';
 
 interface Column<R extends Resource>{
     title: string,
-    dataIndex?: string,
-    key?: string,
-    render: (text: undefined, record: RecordType<R>) => string,
+    key: string,
+    render: (record: RecordType<R>) => string,
     width: number,
 }
 
@@ -21,7 +20,7 @@ interface TableManager {
     reload: () => void;
 }
 
-type ResourceListProps<R extends Resource> = Omit<ResourceListPageProps<R>, 'getTableColumns'> & {
+type ResourceListProps<R extends Resource> = GenaralResourceListProps<R> & {
     getTableColumns: (manager: TableManager) => Array<Column<R>>;
 }
 
@@ -122,7 +121,7 @@ export function ResourceList<R extends Resource>({
                                                 <Text
                                                     style={{ paddingLeft: 16 }}
                                                 >
-                                                    {column.render(undefined, item)}
+                                                    {column.render(item)}
                                                 </Text>
                                             </View>
                                         );
