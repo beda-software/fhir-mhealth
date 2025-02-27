@@ -12,7 +12,7 @@ interface Column<R extends Resource>{
     title: string,
     key: string,
     render: (record: RecordType<R>) => React.ReactElement | string,
-    width: number,
+    width?: number,
 }
 
 
