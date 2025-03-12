@@ -13,7 +13,7 @@ import {
     isNavigationAction,
 } from 'src/uberComponents/ResourceListPage/types';
 import { RecordType } from 'src/components/Table/utils';
-import { Link } from 'expo-router';
+import { Link, LinkProps } from 'expo-router';
 
 interface Column<R extends Resource> {
     title: string;
@@ -26,7 +26,7 @@ interface TableManager {
     reload: () => void;
 }
 
-type ResourceListProps<R extends Resource> = GenaralResourceListProps<R> & {
+type ResourceListProps<R extends Resource> = GenaralResourceListProps<R, unknown, LinkProps['href']> & {
     getTableColumns: (manager: TableManager) => Array<Column<R>>;
 };
 
@@ -159,7 +159,7 @@ export function ResourceList<R extends Resource>({
     );
 }
 
-type PossibleActions = QuestionnaireActionType | NavigationActionType | CustomActionType;
+type PossibleActions = QuestionnaireActionType | NavigationActionType<LinkProps['href']> | CustomActionType;
 
 function Actions({ actions }: { actions: Array<PossibleActions> }) {
     return (
