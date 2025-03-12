@@ -37,6 +37,7 @@ export function ResourceList<R extends Resource>({
     getRecordActions,
     searchParams,
     getTableColumns,
+    getHeaderActions,
 }: ResourceListProps<R>) {
     const allFilters = getFilters?.() ?? [];
 
@@ -51,32 +52,41 @@ export function ResourceList<R extends Resource>({
         searchParams ?? {},
     );
 
+    const headerActions = getHeaderActions?.() ?? [];
+
     const initialTableColumns = getTableColumns({ reload });
 
     const columns = [...initialTableColumns, ...(getRecordActions ? [{ title: 'Actions', key: 'actions' }] : [])];
 
     return (
         <View>
-            {columnsFilterValues.map((f) => {
-                return (
-                    <TextInput
-                        key={f.column.id}
-                        value={f.value as string}
-                        onChangeText={(text) => onChangeColumnFilter(text, f.column.id)}
-                        placeholder={f.column.placeholder.toString()}
-                        style={{
-                            backgroundColor: '#F3F4F5',
-                            width: 220,
-                            height: 50,
-                            borderColor: 'black',
-                            borderRadius: 25,
-                            borderWidth: 1,
-                            marginTop: 10,
-                            padding: 11,
-                        }}
-                    />
-                );
-            })}
+            <View
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+            >
+                {columnsFilterValues.map((f) => {
+                    return (
+                        <TextInput
+                            key={f.column.id}
+                            value={f.value as string}
+                            onChangeText={(text) => onChangeColumnFilter(text, f.column.id)}
+                            placeholder={f.column.placeholder.toString()}
+                            style={{
+                                backgroundColor: '#F3F4F5',
+                                width: 220,
+                                height: 50,
+                                borderColor: 'black',
+                                borderRadius: 25,
+                                borderWidth: 1,
+                                marginTop: 10,
+                                padding: 11,
+                            }}
+                        />
+                    );
+                })}
+                {headerActions ? (
+                    <Actions actions={headerActions} />
+                ) : null}
+            </View>
             <RenderRemoteData
                 remoteData={recordResponse}
                 renderFailure={(error) => <Text>{JSON.stringify(error, undefined, 4)}</Text>}
@@ -130,19 +140,21 @@ export function ResourceList<R extends Resource>({
                                             </View>
                                         );
                                     })}
-                                    {getRecordActions ? (
-                                        <View
-                                            style={{
-                                                flex: 1,
-                                                backgroundColor: '#F3F4F5',
-                                                justifyContent: 'center',
-                                            }}
-                                        >
-                                            <View style={{ paddingLeft: 16 }}>
-                                                <RecordActions actions={getRecordActions(item, { reload })} />
+                                    {getRecordActions ?
+                                        (
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    backgroundColor: '#F3F4F5',
+                                                    justifyContent: 'center'
+                                                }}
+
+                                            >
+                                                <View style={{ paddingLeft: 16 }}>
+                                                    <Actions actions={getRecordActions(item, { reload })} />
+                                                </View>
                                             </View>
-                                        </View>
-                                    ) : null}
+                                        ) : null}
                                 </View>
                             )}
                         />
@@ -153,9 +165,9 @@ export function ResourceList<R extends Resource>({
     );
 }
 
-type PossibleRecordActions = QuestionnaireActionType | NavigationActionType | CustomActionType;
+type PossibleActions = QuestionnaireActionType | NavigationActionType | CustomActionType;
 
-function RecordActions({ actions }: { actions: Array<PossibleRecordActions> }) {
+function Actions({ actions }: { actions: Array<PossibleActions> }) {
     return (
         <View>
             {actions.map((action) => {
