@@ -60,9 +60,7 @@ export function ResourceList<R extends Resource>({
 
     return (
         <View>
-            <View
-                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-            >
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 {columnsFilterValues.map((f) => {
                     return (
                         <TextInput
@@ -83,9 +81,7 @@ export function ResourceList<R extends Resource>({
                         />
                     );
                 })}
-                {headerActions ? (
-                    <Actions actions={headerActions} />
-                ) : null}
+                {headerActions ? <Actions actions={headerActions} /> : null}
             </View>
             <RenderRemoteData
                 remoteData={recordResponse}
@@ -140,21 +136,19 @@ export function ResourceList<R extends Resource>({
                                             </View>
                                         );
                                     })}
-                                    {getRecordActions ?
-                                        (
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                    backgroundColor: '#F3F4F5',
-                                                    justifyContent: 'center'
-                                                }}
-
-                                            >
-                                                <View style={{ paddingLeft: 16 }}>
-                                                    <Actions actions={getRecordActions(item, { reload })} />
-                                                </View>
+                                    {getRecordActions ? (
+                                        <View
+                                            style={{
+                                                flex: 1,
+                                                backgroundColor: '#F3F4F5',
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            <View style={{ paddingLeft: 16 }}>
+                                                <Actions actions={getRecordActions(item, { reload })} />
                                             </View>
-                                        ) : null}
+                                        </View>
+                                    ) : null}
                                 </View>
                             )}
                         />
@@ -170,11 +164,16 @@ type PossibleActions = QuestionnaireActionType | NavigationActionType | CustomAc
 function Actions({ actions }: { actions: Array<PossibleActions> }) {
     return (
         <View>
-            {actions.map((action) => {
-                if (isNavigationAction(action)) {
-                    return <Link href={action.link}>{action.title}</Link>;
-                }
-                return <Text>{JSON.stringify(action)}</Text>;
+            {actions.map((action, index) => {
+                return (
+                    <React.Fragment key={index}>
+                        {isNavigationAction(action) ? (
+                            <Link href={action.link}>{action.title}</Link>
+                        ) : (
+                            <Text>{JSON.stringify(action)}</Text>
+                        )}
+                    </React.Fragment>
+                );
             })}
         </View>
     );
