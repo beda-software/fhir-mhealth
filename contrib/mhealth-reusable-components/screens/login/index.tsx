@@ -3,11 +3,11 @@ import React from 'react';
 import { Button, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useLoginScreen } from './hooks';
+import { useLoginScreen, LoginScreenProps } from './hooks';
 import s from './styles';
 
-export function LoginScreen() {
-    const { onSignIn, isReadyForRequest, result, obtainTokenError } = useLoginScreen();
+export function LoginScreen(props:LoginScreenProps) {
+    const { onSignIn, isReadyForRequest, result, obtainTokenError } = useLoginScreen(props);
 
     return (
         <SafeAreaView style={s.safeArea}>

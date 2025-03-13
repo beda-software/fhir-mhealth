@@ -1,23 +1,37 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import config from '@beda.software/emr-config';
 import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
 
-import { setAuthToken } from '@/services/auth';
+WebBrowser.maybeCompleteAuthSession();
 
-import { useSession } from '@/context/auth/hooks';
+interface SetAuthTokenArgs {
+    tokenURL: string;
+    authCode: string;
+    codeVerifier: string;
+    onSetToken: () => void;
+}
 
-export function useLoginScreen() {
+export interface LoginScreenProps {
+    clientId: string,
+    baseURL: string,
+    setAuthToken: (args: SetAuthTokenArgs) => Promise<void>;
+    useSession: () => {
+        onAuthStatusChanged: () => void;
+    }
+}
+
+export function useLoginScreen({ clientId, setAuthToken, useSession, baseURL}:LoginScreenProps) {
     const { onAuthStatusChanged } = useSession();
     const appScheme = Constants.expoConfig!.scheme![0];
     const redirectUri = AuthSession.makeRedirectUri({ scheme: appScheme, path: 'login' });
     const [obtainTokenError, setTokenError] = useState<string | undefined>(undefined);
 
-    const discovery = AuthSession.useAutoDiscovery(config.baseURL);
+    const discovery = AuthSession.useAutoDiscovery(baseURL);
     const [request, result, onSignIn] = AuthSession.useAuthRequest(
         {
-            clientId: config.clientId,
+            clientId: clientId,
             redirectUri,
             scopes: ['profile'],
         },
@@ -27,7 +41,7 @@ export function useLoginScreen() {
     useEffect(() => {
         if (request && discovery && result?.type === 'success') {
             const authCode = result.params.code;
-            const defaultTokenUrl = `${config.baseURL}/auth/token`;
+            const defaultTokenUrl = `${baseURL}/auth/token`;
             const tokenURL = discovery.tokenEndpoint ?? defaultTokenUrl;
 
             try {
