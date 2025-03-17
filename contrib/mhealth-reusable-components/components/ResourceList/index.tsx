@@ -163,7 +163,7 @@ type PossibleActions = QuestionnaireActionType | NavigationActionType<LinkProps[
 
 function Actions({ actions }: { actions: Array<PossibleActions> }) {
     return (
-        <View>
+        <View style={{ flexDirection: 'row', gap: 30 }}>
             {actions.map((action, index) => {
                 return (
                     <React.Fragment key={index}>
