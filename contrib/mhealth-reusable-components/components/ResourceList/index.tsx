@@ -2,7 +2,7 @@ import React from 'react';
 
 import { RenderRemoteData } from '@beda.software/fhir-react';
 import { Resource } from 'fhir/r4b';
-import { View, Text, FlatList, TextInput } from 'react-native';
+import { View, Text, FlatList, TextInput, ActivityIndicator } from 'react-native';
 import { useSearchBar } from 'src/components/SearchBar/hooks';
 import { useResourceListPage } from 'src/uberComponents/ResourceListPage/hooks';
 import {
@@ -14,6 +14,7 @@ import {
 } from 'src/uberComponents/ResourceListPage/types';
 import { RecordType } from 'src/components/Table/utils';
 import { Link, LinkProps } from 'expo-router';
+import { isLoading } from '@beda.software/remote-data';
 
 interface Column<R extends Resource> {
     title: string;
@@ -59,7 +60,7 @@ export function ResourceList<R extends Resource>({
     const columns = [...initialTableColumns, ...(getRecordActions ? [{ title: 'Actions', key: 'actions' }] : [])];
 
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 {columnsFilterValues.map((f) => {
                     return (
@@ -86,12 +87,14 @@ export function ResourceList<R extends Resource>({
             <RenderRemoteData
                 remoteData={recordResponse}
                 renderFailure={(error) => <Text>{JSON.stringify(error, undefined, 4)}</Text>}
-                renderLoading={() => <Text>Loading</Text>}
+                renderLoading={() => <ActivityIndicator />}
             >
                 {(records) => {
                     return (
                         <FlatList
-                            scrollEnabled={false}
+                            style={{ flex: 1 }}
+                            onRefresh={reload}
+                            refreshing={isLoading(recordResponse)}
                             ListHeaderComponent={
                                 <View
                                     style={{
