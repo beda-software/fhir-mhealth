@@ -2,12 +2,12 @@ import React from 'react';
 
 import { RenderRemoteData } from '@beda.software/fhir-react';
 import { Resource } from 'fhir/r4b';
-import { View, Text, FlatList, TextInput, ActivityIndicator } from 'react-native';
+import { Text, ActivityIndicator, FlatList, FlatListProps } from 'react-native';
 import { useSearchBar } from 'src/components/SearchBar/hooks';
 import { useResourceListPage } from 'src/uberComponents/ResourceListPage/hooks';
 import {
     CustomActionType,
-    ResourceListProps as GenaralResourceListProps,
+    ResourceListProps as GeneralResourceListProps,
     NavigationActionType,
     QuestionnaireActionType,
     isNavigationAction,
@@ -15,6 +15,10 @@ import {
 import { RecordType } from 'src/components/Table/utils';
 import { Link, LinkProps } from 'expo-router';
 import { isLoading } from '@beda.software/remote-data';
+import { S as initialStyles } from './styles';
+import { IStyledComponentBase } from 'styled-components/native/dist/types';
+import { SearchBarColumn } from 'src/components/SearchBar/types';
+import { SearchBarColumnProps } from 'src/components/SearchBar/SearchBarColumn/types';
 
 interface Column<R extends Resource> {
     title: string;
@@ -27,19 +31,35 @@ interface TableManager {
     reload: () => void;
 }
 
-type ResourceListProps<R extends Resource> = GenaralResourceListProps<R, unknown, LinkProps['href']> & {
-    getTableColumns: (manager: TableManager) => Array<Column<R>>;
+type ComponentStyles = { [key: string]: IStyledComponentBase<'native'> };
+
+type FilterSearchBarColumn = SearchBarColumn & {
+    // TODO: move renderControl to SearchBarColumn
+    renderControl?: (props: SearchBarColumnProps) => React.ReactNode;
 };
 
-export function ResourceList<R extends Resource>({
-    resourceType,
-    extractPrimaryResources,
-    getFilters,
-    getRecordActions,
-    searchParams,
-    getTableColumns,
-    getHeaderActions,
-}: ResourceListProps<R>) {
+type ResourceListProps<R extends Resource> = GeneralResourceListProps<R, unknown, LinkProps['href']> & {
+    getFilters?: () => FilterSearchBarColumn[];
+
+    getTableColumns?: (manager: TableManager) => Array<Column<R>>;
+
+    flatListProps?: Partial<FlatListProps<RecordType<R>>>;
+
+    styles?: ComponentStyles;
+};
+
+export function ResourceList<R extends Resource>(props: ResourceListProps<R>) {
+    const {
+        resourceType,
+        extractPrimaryResources,
+        getFilters,
+        getRecordActions,
+        searchParams,
+        getTableColumns,
+        getHeaderActions,
+        flatListProps,
+        styles = {},
+    } = props;
     const allFilters = getFilters?.() ?? [];
 
     const { columnsFilterValues, onChangeColumnFilter } = useSearchBar({
@@ -55,35 +75,75 @@ export function ResourceList<R extends Resource>({
 
     const headerActions = getHeaderActions?.() ?? [];
 
-    const initialTableColumns = getTableColumns({ reload });
+    const initialTableColumns = getTableColumns?.({ reload }) ?? [];
 
     const columns = [...initialTableColumns, ...(getRecordActions ? [{ title: 'Actions', key: 'actions' }] : [])];
 
-    return (
-        <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                {columnsFilterValues.map((f) => {
+    const S = { ...initialStyles, ...styles };
+
+    const renderHeader = () => {
+        return (
+            <S.HeaderContainer>
+                {columns.map((column, index) => (
+                    <S.HeaderCell key={column.key} $isFirst={index === 0} $isLast={index === columns.length - 1}>
+                        <S.HeaderText>{column.title}</S.HeaderText>
+                    </S.HeaderCell>
+                ))}
+            </S.HeaderContainer>
+        );
+    };
+
+    const renderTableItem = (item: RecordType<R>) => {
+        return (
+            <S.RowContainer key={item.resource.id}>
+                {initialTableColumns.map((column) => {
+                    const value = column.render(item);
+                    const component = typeof value === 'string' ? <Text>{value}</Text> : value;
                     return (
-                        <TextInput
-                            key={f.column.id}
-                            value={f.value as string}
-                            onChangeText={(text) => onChangeColumnFilter(text, f.column.id)}
-                            placeholder={f.column.placeholder.toString()}
-                            style={{
-                                backgroundColor: '#F3F4F5',
-                                width: 220,
-                                height: 50,
-                                borderColor: 'black',
-                                borderRadius: 25,
-                                borderWidth: 1,
-                                marginTop: 10,
-                                padding: 11,
-                            }}
+                        <S.Cell key={column.key}>
+                            <S.CellContent>{component}</S.CellContent>
+                        </S.Cell>
+                    );
+                })}
+                {getRecordActions ? (
+                    <S.Cell>
+                        <S.CellContent>
+                            <Actions actions={getRecordActions(item, { reload })} S={S} />
+                        </S.CellContent>
+                    </S.Cell>
+                ) : null}
+            </S.RowContainer>
+        );
+    };
+
+    console.log('columnsFilterValues', columnsFilterValues);
+
+    return (
+        <S.Container>
+            <S.FilterContainer>
+                {columnsFilterValues.map((filter) => {
+                    if ('renderControl' in filter.column && filter.column.renderControl) {
+                        return (
+                            <React.Fragment key={filter.column.id}>
+                                {(filter.column as any).renderControl({
+                                    columnFilterValue: filter,
+                                    onChange: onChangeColumnFilter,
+                                })}
+                            </React.Fragment>
+                        );
+                    }
+
+                    return (
+                        <S.FilterInput
+                            key={filter.column.id}
+                            value={filter.value as string}
+                            onChangeText={(text) => onChangeColumnFilter(text, filter.column.id)}
+                            placeholder={filter.column.placeholder.toString()}
                         />
                     );
                 })}
-                {headerActions ? <Actions actions={headerActions} /> : null}
-            </View>
+                {headerActions ? <Actions actions={headerActions} S={S} /> : null}
+            </S.FilterContainer>
             <RenderRemoteData
                 remoteData={recordResponse}
                 renderFailure={(error) => <Text>{JSON.stringify(error, undefined, 4)}</Text>}
@@ -92,81 +152,25 @@ export function ResourceList<R extends Resource>({
                 {(records) => {
                     return (
                         <FlatList
-                            style={{ flex: 1 }}
                             onRefresh={reload}
                             refreshing={isLoading(recordResponse)}
-                            ListHeaderComponent={
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        flex: 1,
-                                        height: 48,
-                                        marginTop: 20,
-                                    }}
-                                >
-                                    {columns.map((column, index) => (
-                                        <View
-                                            key={column.key}
-                                            style={{
-                                                flex: 1,
-                                                backgroundColor: '#E9ECEF',
-                                                justifyContent: 'center',
-                                                ...(index === 0 ? { borderTopLeftRadius: 16 } : {}),
-                                                ...(index === columns.length - 1 ? { borderTopRightRadius: 16 } : {}),
-                                            }}
-                                        >
-                                            <Text style={{ paddingLeft: 16 }}>{column.title}</Text>
-                                        </View>
-                                    ))}
-                                </View>
-                            }
+                            ListHeaderComponent={renderHeader()}
                             data={records}
-                            renderItem={({ item }) => (
-                                <View key={item.resource.id} style={{ flexDirection: 'row', height: 48, flex: 1 }}>
-                                    {initialTableColumns.map((column) => {
-                                        const value = column.render(item);
-                                        const component = typeof value === 'string' ? <Text>{value}</Text> : value;
-                                        return (
-                                            <View
-                                                key={column.key}
-                                                style={{
-                                                    flex: 1,
-                                                    backgroundColor: '#F3F4F5',
-                                                    justifyContent: 'center',
-                                                }}
-                                            >
-                                                <View style={{ paddingLeft: 16 }}>{component}</View>
-                                            </View>
-                                        );
-                                    })}
-                                    {getRecordActions ? (
-                                        <View
-                                            style={{
-                                                flex: 1,
-                                                backgroundColor: '#F3F4F5',
-                                                justifyContent: 'center',
-                                            }}
-                                        >
-                                            <View style={{ paddingLeft: 16 }}>
-                                                <Actions actions={getRecordActions(item, { reload })} />
-                                            </View>
-                                        </View>
-                                    ) : null}
-                                </View>
-                            )}
+                            renderItem={({ item }: { item: RecordType<R> }) => renderTableItem(item)}
+                            {...flatListProps}
                         />
                     );
                 }}
             </RenderRemoteData>
-        </View>
+        </S.Container>
     );
 }
 
 type PossibleActions = QuestionnaireActionType | NavigationActionType<LinkProps['href']> | CustomActionType;
 
-function Actions({ actions }: { actions: Array<PossibleActions> }) {
+function Actions({ actions, S }: { actions: Array<PossibleActions>; S: ComponentStyles }) {
     return (
-        <View style={{ flexDirection: 'row', gap: 30 }}>
+        <S.ActionsContainer>
             {actions.map((action, index) => {
                 return (
                     <React.Fragment key={index}>
@@ -178,6 +182,6 @@ function Actions({ actions }: { actions: Array<PossibleActions> }) {
                     </React.Fragment>
                 );
             })}
-        </View>
+        </S.ActionsContainer>
     );
 }
