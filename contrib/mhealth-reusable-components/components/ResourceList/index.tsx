@@ -116,8 +116,6 @@ export function ResourceList<R extends Resource>(props: ResourceListProps<R>) {
         );
     };
 
-    console.log('columnsFilterValues', columnsFilterValues);
-
     return (
         <S.Container>
             <S.FilterContainer>
