@@ -52,6 +52,7 @@ export function ResourceList<R extends Resource>(props: ResourceListProps<R>) {
     const {
         resourceType,
         extractPrimaryResources,
+        extractChildrenResources,
         getFilters,
         getRecordActions,
         searchParams,
@@ -69,6 +70,7 @@ export function ResourceList<R extends Resource>(props: ResourceListProps<R>) {
     const { recordResponse, reload } = useResourceListPage<R>(
         resourceType,
         extractPrimaryResources,
+        extractChildrenResources,
         columnsFilterValues,
         searchParams ?? {},
     );
