@@ -10,6 +10,7 @@ interface SetAuthTokenArgs {
     tokenURL: string;
     authCode: string;
     codeVerifier: string;
+    redirectUri: string;
     onSetToken: () => void;
 }
 
@@ -44,18 +45,17 @@ export function useLoginScreen({ clientId, setAuthToken, useSession, baseURL}:Lo
             const defaultTokenUrl = `${baseURL}/auth/token`;
             const tokenURL = discovery.tokenEndpoint ?? defaultTokenUrl;
 
-            try {
-                setAuthToken({
-                    tokenURL,
-                    authCode,
-                    codeVerifier: request.codeVerifier!,
-                    onSetToken: onAuthStatusChanged,
-                });
-            } catch (error) {
+            setAuthToken({
+                tokenURL,
+                authCode,
+                codeVerifier: request.codeVerifier!,
+                redirectUri,
+                onSetToken: onAuthStatusChanged,
+            }).catch((error) => {
                 if (error instanceof Error) {
                     setTokenError(error.message);
                 }
-            }
+            });
         }
     }, [result, discovery, request, onAuthStatusChanged]);
 
